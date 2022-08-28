@@ -23,7 +23,7 @@ namespace Poker
 
         public byte[] GetImmagine()
         {
-            string path = $"..\\carte\\{(int)Seme}-{(int)Numero}.png";
+            string path = $"carte\\{(int)Seme}-{(int)Numero}.png";
             return File.ReadAllBytes(path);
         }
         public string GetBase64Immagine()

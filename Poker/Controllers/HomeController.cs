@@ -21,6 +21,36 @@ namespace Poker.Controllers
 
         public IActionResult Index()
         {
+            Partita partita = SetNuovaPartita();
+
+            return View(partita);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public JsonResult NuovaPartita()
+        {
+            Partita partita = SetNuovaPartita();
+
+            return Json(partita);
+        }
+
+        public JsonResult GetPartita()
+        {
+            return Json(Partita.PartitaCorrente);
+        }
+
+        public Partita SetNuovaPartita()
+        {
             Mazzo mazzo = new Mazzo();
             mazzo.CreaMazzo(true);
 
@@ -45,31 +75,7 @@ namespace Poker.Controllers
 
             Partita.PartitaCorrente = partita;
 
-            return View(partita);
+            return partita;
         }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public JsonResult NuovaPartita()
-        {
-            
-
-            return Json(true);
-        }
-
-        public JsonResult GetPartita()
-        {
-            return Json(Partita.PartitaCorrente);
-        }
-
     }
 }

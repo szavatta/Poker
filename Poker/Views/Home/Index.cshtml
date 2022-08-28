@@ -11,6 +11,7 @@
     </div>
     <div id="carte-g2">
     </div>
+    <button id="btnNuovaPartita">Nuova partita</button>
 </div>
 
 <script type="text/javascript">
@@ -18,6 +19,10 @@
     $(document).ready(function () {
 
         GetPartitaCorrente();
+
+        $("#btnNuovaPartita").click(function () {
+            NuovaPartita();
+        });
 
     })
 
@@ -28,7 +33,25 @@
             url: "/home/GetPartita",
             dataType: "json",
             success: function (partita) {
-                
+
+                VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
+                VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
+                VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
+                VisualizzaCarte(partita.giocatori[1].carte, "carte-g2");
+                VisualizzaPunteggio(partita.giocatori[1].punteggio.tipoString, "carte-g2")
+
+            }
+        });
+    }
+
+    function NuovaPartita() {
+
+        $.ajax({
+            type: "GET",
+            url: "/home/NuovaPartita",
+            dataType: "json",
+            success: function (partita) {
+
                 VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
                 VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
                 VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
