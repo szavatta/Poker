@@ -3,8 +3,9 @@ for details on configuring this project to bundle and minify static web assets. 
 
 .carta {
     height: 150px;
-    width: 104px;
+    width: 113px;
     display: inline-flex;
+    background-repeat: no-repeat;
 }
 
 a.navbar-brand {

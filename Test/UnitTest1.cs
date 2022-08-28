@@ -300,6 +300,35 @@ namespace Test
         }
 
         [Test]
+        public void Vincitore3()
+        {
+            Tavolo tavolo = new Tavolo();
+            tavolo.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche)
+            };
+
+            Giocatore g1 = new Giocatore();
+            g1.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri)
+            };
+
+            Giocatore g2 = new Giocatore();
+            g2.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori)
+            };
+
+            Assert.IsTrue(g2.IsVincitore(g1, tavolo));
+        }
+        [Test]
         public void SortGiocatori()
         {
             Tavolo tavolo = new Tavolo();
@@ -344,7 +373,7 @@ namespace Test
             List<Giocatore> listag = new List<Giocatore> { g1, g2, g3 };
             listag.Sort();
 
-            Assert.IsTrue(g1.IsVincitore(g2, tavolo));
+            Assert.AreEqual(g3, listag[0]);
         }
 
     }

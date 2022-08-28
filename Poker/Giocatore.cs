@@ -50,10 +50,7 @@ namespace Poker
                         else
                         {
                             //guarda le altre carte
-                            if (this.Punteggio.Tipo == Punteggio.EnumTipo.Coppia ||
-                                this.Punteggio.Tipo == Punteggio.EnumTipo.Tris ||
-                                this.Punteggio.Tipo == Punteggio.EnumTipo.DoppiaCoppia ||
-                                this.Punteggio.Tipo == Punteggio.EnumTipo.Poker)
+                            if (this.Punteggio.Carte.Count < 5)
                             {
                                 List<Carta> carte1 = new List<Carta>(this.Carte.OrderByDescending(q => q.Numero));
                                 carte1.AddRange(tavolo.Carte);
@@ -73,7 +70,6 @@ namespace Poker
                                     if (ret.HasValue)
                                         break;
                                 }
-
                             }
                         }
                     }    

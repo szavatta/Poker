@@ -56,6 +56,7 @@ namespace Poker
                             carte2.Where(q => q.Numero == Carta.NumeroCarta.Asso14).ToList().ForEach(q => q.Numero = Carta.NumeroCarta.Asso);
 
                         var a = carte2.GroupBy(q => q.Numero).ToList().OrderByDescending(q => q.Key).ToList();
+                        int indice = -1;
                         if (a.Count() >= 5)
                         {
                             for (int ii = 0; ii < a.Count() - 4; ii++)
@@ -63,14 +64,21 @@ namespace Poker
                                 diff = (int)a[ii].Key - (int)a[ii + 4].Key;
                                 num = a[ii].Key;
                                 if (diff == 4)
+                                {
+                                    indice = ii;
                                     break;
+                                }
                             }
                         }
                         if (diff == 4)
                         {
                             Tipo = EnumTipo.ScalaColore;
                             Numero1 = num;
-
+                            Carte = new List<Carta>();
+                            for (int ii = indice; ii < indice + 5; ii++)
+                            {
+                                Carte.Add(carte.Where(q => q.Numero == a[i].Key && q.Seme == aa.Key).FirstOrDefault());
+                            }
                         }
                     }
                 }
@@ -125,6 +133,7 @@ namespace Poker
                         carte.Where(q => q.Numero == Carta.NumeroCarta.Asso14).ToList().ForEach(q => q.Numero = Carta.NumeroCarta.Asso);
 
                     var a = carte.GroupBy(q => q.Numero).ToList().OrderByDescending(q => q.Key).ToList();
+                    int indice = -1;
                     if (a.Count() >= 5)
                     {
                         for (int ii = 0; ii < a.Count() - 4; ii++)
@@ -132,13 +141,21 @@ namespace Poker
                             diff = (int)a[ii].Key - (int)a[ii + 4].Key;
                             num = a[ii].Key;
                             if (diff == 4)
+                            {
+                                indice = ii;
                                 break;
+                            }
                         }
                     }
                     if (diff == 4)
                     {
                         Tipo = EnumTipo.ScalaSemplice;
                         Numero1 = num;
+                        Carte = new List<Carta>();
+                        for (int ii = indice; ii < indice + 5; ii++)
+                        {
+                            Carte.Add(carte.Where(q => q.Numero == a[ii].Key).FirstOrDefault());
+                        }
                     }
                 }
             }
