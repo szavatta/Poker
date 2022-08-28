@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Diagnostics.CodeAnalysis;
+using System;
 
 namespace Poker
 {
 
-    public class Giocatore : Entita
+    public class Giocatore : Entita, IComparable<Giocatore>
     {
         public Punteggio Punteggio { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo)
@@ -47,10 +50,46 @@ namespace Poker
                         else
                         {
                             //guarda le altre carte
+                            if (this.Punteggio.Tipo == Punteggio.EnumTipo.Coppia ||
+                                this.Punteggio.Tipo == Punteggio.EnumTipo.Tris ||
+                                this.Punteggio.Tipo == Punteggio.EnumTipo.DoppiaCoppia ||
+                                this.Punteggio.Tipo == Punteggio.EnumTipo.Poker)
+                            {
+                                List<Carta> carte1 = new List<Carta>(this.Carte.OrderByDescending(q => q.Numero));
+                                carte1.AddRange(tavolo.Carte);
+                                carte1.RemoveAll(q => this.Punteggio.Carte.Contains(q));
+
+                                List<Carta> carte2 = new List<Carta>(g2.Carte.OrderByDescending(q => q.Numero));
+                                carte2.AddRange(tavolo.Carte);
+                                carte2.RemoveAll(q => g2.Punteggio.Carte.Contains(q));
+
+                                for (int i = 0; i < carte1.Count() - 1; i++)
+                                {
+                                    if (carte1[i].Numero > carte2[i].Numero)
+                                        ret = true;
+                                    else if (carte1[i].Numero < carte2[i].Numero)
+                                        ret = false;
+
+                                    if (ret.HasValue)
+                                        break;
+                                }
+
+                            }
                         }
                     }    
                 }
             }
+
+            return ret;
+        }
+
+        public int CompareTo(Giocatore other)
+        {
+            int ret = 0;
+            if (this.IsVincitore(other, Partita.PartitaCorrente.Tavolo) == true)
+                ret = -1;
+            else if (this.IsVincitore(other, Partita.PartitaCorrente.Tavolo) == false)
+                ret = 1;
 
             return ret;
         }

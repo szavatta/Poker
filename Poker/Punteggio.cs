@@ -21,6 +21,7 @@ namespace Poker
         public Carta.NumeroCarta? Numero1 { get; set; }
         public Carta.NumeroCarta? Numero2 { get; set; }
         public Carta.SemeCarta? Seme { get; set; }
+        public List<Carta> Carte { get; set; }
 
         public enum EnumTipo
         {
@@ -69,6 +70,7 @@ namespace Poker
                         {
                             Tipo = EnumTipo.ScalaColore;
                             Numero1 = num;
+
                         }
                     }
                 }
@@ -81,6 +83,7 @@ namespace Poker
                 {
                     Tipo = EnumTipo.Poker;
                     Numero1 = a.Key;
+                    Carte = carte.Where(q => q.Numero == a.Key).ToList();
                 }
             }
             if (Tipo == null) // Full
@@ -95,6 +98,8 @@ namespace Poker
                         Tipo = EnumTipo.Full;
                         Numero1 = a1.Key;
                         Numero2 = a2.Key;
+                        Carte = carte.Where(q => q.Numero == a1.Key).ToList();
+                        Carte.AddRange(carte.Where(q => q.Numero == a2.Key).Take(2).ToList());
                     }
                 }
             }
@@ -105,6 +110,7 @@ namespace Poker
                 {
                     Tipo = EnumTipo.Colore;
                     Seme = a.Key;
+                    Carte = carte.Where(q => q.Seme == a.Key).ToList();
                 }
             }
             if (Tipo == null) // ScalaSemplice
@@ -144,6 +150,7 @@ namespace Poker
                 {
                     Tipo = EnumTipo.Tris;
                     Numero1 = a.Key;
+                    Carte = carte.Where(q => q.Numero == a.Key).ToList();
                 }
             }
             if (Tipo == null) //Doppia Coppia
@@ -154,6 +161,8 @@ namespace Poker
                     Tipo = EnumTipo.DoppiaCoppia;
                     Numero1 = a.First().Key;
                     Numero2 = a.Skip(1).First().Key;
+                    Carte = carte.Where(q => q.Numero == Numero1).ToList();
+                    Carte.AddRange(carte.Where(q => q.Numero == Numero2));
                 }
             }
             if (Tipo == null) //Coppia
@@ -163,6 +172,7 @@ namespace Poker
                 {
                     Tipo = EnumTipo.Coppia;
                     Numero1 = a.Key;
+                    Carte = carte.Where(q => q.Numero == a.Key).ToList();
                 }
             }
         }

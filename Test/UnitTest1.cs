@@ -299,6 +299,53 @@ namespace Test
             Assert.IsTrue(g2.IsVincitore(g1, tavolo));
         }
 
+        [Test]
+        public void SortGiocatori()
+        {
+            Tavolo tavolo = new Tavolo();
+            tavolo.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche)
+            };
+
+            Giocatore g1 = new Giocatore(); //tris di assi
+            g1.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri)
+            };
+            g1.SetPunteggio(tavolo);
+
+            Giocatore g2 = new Giocatore(); //tris di 3
+            g2.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori)
+            };
+            g2.SetPunteggio(tavolo);
+
+            Giocatore g3 = new Giocatore(); //scala
+            g3.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori)
+            };
+            g3.SetPunteggio(tavolo);
+
+            Poker.Partita.PartitaCorrente = new Partita
+            {
+                Tavolo = tavolo
+            };
+
+            List<Giocatore> listag = new List<Giocatore> { g1, g2, g3 };
+            listag.Sort();
+
+            Assert.IsTrue(g1.IsVincitore(g2, tavolo));
+        }
 
     }
 }
