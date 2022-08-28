@@ -1,0 +1,57 @@
+﻿@model Partita
+
+@{
+    ViewData["Title"] = "Poker";
+}
+
+<div class="tavolo">
+    <div id="carte-tavolo">
+    </div>
+    <div id="carte-g1">
+    </div>
+    <div id="carte-g2">
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        GetPartitaCorrente();
+
+    })
+
+    function GetPartitaCorrente() {
+
+        $.ajax({
+            type: "GET",
+            url: "/home/GetPartita",
+            dataType: "json",
+            success: function (partita) {
+                
+                VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
+                VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
+                VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
+                VisualizzaCarte(partita.giocatori[1].carte, "carte-g2");
+                VisualizzaPunteggio(partita.giocatori[1].punteggio.tipoString, "carte-g2")
+
+            }
+        });
+    }
+
+    function VisualizzaCarte(carte, divid) {
+        $("#" + divid).empty()
+        carte.forEach(function (item) {
+            var div = $("<div class='carta'></div>");
+            div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "'");
+            $("#" + divid).append(div);
+        });
+    }
+
+    function VisualizzaPunteggio(punteggio, divid) {
+        var div = $("<div>" + punteggio + "</div>");
+        $("#" + divid).append(div);
+    }
+
+
+</script>
