@@ -12,6 +12,7 @@
     <div id="carte-g2">
     </div>
     <button id="btnNuovaPartita">Nuova partita</button>
+    <button id="btnPescaCartaTavolo">Pesca</button>
 </div>
 
 <script type="text/javascript">
@@ -23,6 +24,16 @@
         $("#btnNuovaPartita").click(function () {
             NuovaPartita();
         });
+        $("#btnPescaCartaTavolo").click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/home/PescaCartaTavolo",
+                dataType: "json",
+                success: function (partita) {
+                    AggiornaTavolo(partita);
+                }
+            });
+        });
 
     })
 
@@ -33,13 +44,7 @@
             url: "/home/GetPartita",
             dataType: "json",
             success: function (partita) {
-
-                VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
-                VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
-                VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
-                VisualizzaCarte(partita.giocatori[1].carte, "carte-g2");
-                VisualizzaPunteggio(partita.giocatori[1].punteggio.tipoString, "carte-g2")
-
+                AggiornaTavolo(partita);
             }
         });
     }
@@ -51,13 +56,7 @@
             url: "/home/NuovaPartita",
             dataType: "json",
             success: function (partita) {
-
-                VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
-                VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
-                VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
-                VisualizzaCarte(partita.giocatori[1].carte, "carte-g2");
-                VisualizzaPunteggio(partita.giocatori[1].punteggio.tipoString, "carte-g2")
-
+                AggiornaTavolo(partita);
             }
         });
     }
@@ -76,5 +75,12 @@
         $("#" + divid).append(div);
     }
 
+    function AggiornaTavolo(partita) {
+        VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
+        VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
+        VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
+        VisualizzaCarte(partita.giocatori[1].carte, "carte-g2");
+        VisualizzaPunteggio(partita.giocatori[1].punteggio.tipoString, "carte-g2")
+    }
 
 </script>

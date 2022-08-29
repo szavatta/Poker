@@ -44,6 +44,17 @@ namespace Poker.Controllers
             return Json(partita);
         }
 
+        public JsonResult PescaCartaTavolo()
+        {
+            if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5)
+            {
+                Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo);
+                Partita.PartitaCorrente.Giocatori.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
+            }
+
+            return Json(Partita.PartitaCorrente);
+        }
+
         public JsonResult GetPartita()
         {
             return Json(Partita.PartitaCorrente);
@@ -55,7 +66,7 @@ namespace Poker.Controllers
             mazzo.CreaMazzo(true);
 
             Tavolo t = new Tavolo();
-            t.Pesca(mazzo, 5);
+            t.Pesca(mazzo, 3);
 
             Giocatore g1 = new Giocatore();
             g1.Pesca(mazzo, 2);
