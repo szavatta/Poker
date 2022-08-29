@@ -10,13 +10,13 @@
         <div id="carte-g0" class="col-sm-4 text-center"></div>
         <div class="col-sm-4 text-center"></div>
     </div>
-    <div class="row" style="height: 100px;"></div>
+    <div class="row" style="height: 50px;"></div>
     <div class="row">
         <div id="carte-g1" class="col-sm-3 text-center"></div>
         <div id="carte-tavolo" class="col-sm-6 text-center"></div>
         <div id="carte-g2" class="col-sm-3 text-center"></div>
     </div>
-    <div class="row" style="height: 100px;"></div>
+    <div class="row" style="height: 50px;"></div>
     <div class="row">
         <div class="col-sm-4 text-center"></div>
         <div id="carte-g3" class="col-sm-4 text-center"></div>
@@ -74,11 +74,11 @@
 
     function VisualizzaCarte(carte, divid, nome) {
         $("#" + divid).empty()
-        carte.forEach(function (item) {
+        carte.forEach(function (item, index) {
             var div = $("<div class='carta'></div>");
-            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid");
+            div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
             //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
-            div.css("background-image", "url('" + item.pathImage + "')");
+            //div.css("background-image", "url('" + item.pathImage + "')")/*.css("left", -65*index)*/;
             $("#" + divid).append(div);
         });
         if (nome != undefined) {

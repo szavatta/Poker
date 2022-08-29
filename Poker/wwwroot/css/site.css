@@ -10,6 +10,7 @@ for details on configuring this project to bundle and minify static web assets. 
     width: 113px;
     display: inline-flex;
     background-repeat: no-repeat;
+    position: relative;
 }
 
 a.navbar-brand {
