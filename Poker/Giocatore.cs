@@ -10,6 +10,7 @@ namespace Poker
     public class Giocatore : Entita, IComparable<Giocatore>
     {
         public Punteggio Punteggio { get; set; }
+        public string Nome { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo)
         {
             Punteggio p = new Punteggio();
