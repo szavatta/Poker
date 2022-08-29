@@ -5,16 +5,17 @@ namespace Poker
 {
     public class Punteggio
     {
-        private EnumTipo? tipo { get; set; }
-        public EnumTipo? Tipo {
+        private EnumTipo? _tipo { get; set; }
+        public EnumTipo? Tipo 
+        {
             get 
             { 
-                return tipo; 
+                return _tipo; 
             }
             set
             {
-                tipo = value;
-                TipoString = tipo.ToString();
+                _tipo = value;
+                TipoString = _tipo.ToString();
             }
         }
         public string TipoString { get; private set; }

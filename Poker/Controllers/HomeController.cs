@@ -68,21 +68,23 @@ namespace Poker.Controllers
             Tavolo t = new Tavolo();
             t.Pesca(mazzo, 3);
 
-            Giocatore g1 = new Giocatore();
-            g1.Pesca(mazzo, 2);
-            g1.SetPunteggio(t);
-
-            Giocatore g2 = new Giocatore();
-            g2.Pesca(mazzo, 2);
-            g2.SetPunteggio(t);
-
             Partita partita = new Partita
             {
                 Mazzo = mazzo,
                 Tavolo = t,
-                Giocatori = new List<Giocatore> { g1, g2 },
+                Giocatori = new List<Giocatore>(),
                 Mano = 0
             };
+
+
+            for (int i = 0; i < 4; i++)
+            {
+                Giocatore g = new Giocatore();
+                g.Nome = $"Giocatore{i + 1}";
+                g.Pesca(mazzo, 2);
+                g.SetPunteggio(t);
+                partita.Giocatori.Add(g);
+            }
 
             Partita.PartitaCorrente = partita;
 

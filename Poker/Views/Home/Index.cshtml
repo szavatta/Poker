@@ -4,12 +4,23 @@
     ViewData["Title"] = "Poker";
 }
 
-<div class="tavolo">
-    <div id="carte-tavolo">
+<div class="tavolo container">
+    <div class="row">
+        <div class="col-sm-4 text-center"></div>
+        <div id="carte-g0" class="col-sm-4 text-center"></div>
+        <div class="col-sm-4 text-center"></div>
     </div>
-    <div id="carte-g1">
+    <div class="row" style="height: 100px;"></div>
+    <div class="row">
+        <div id="carte-g1" class="col-sm-3 text-center"></div>
+        <div id="carte-tavolo" class="col-sm-6 text-center"></div>
+        <div id="carte-g2" class="col-sm-3 text-center"></div>
     </div>
-    <div id="carte-g2">
+    <div class="row" style="height: 100px;"></div>
+    <div class="row">
+        <div class="col-sm-4 text-center"></div>
+        <div id="carte-g3" class="col-sm-4 text-center"></div>
+        <div class="col-sm-4 text-center"></div>
     </div>
     <button id="btnNuovaPartita">Nuova partita</button>
     <button id="btnPescaCartaTavolo">Pesca</button>
@@ -61,13 +72,18 @@
         });
     }
 
-    function VisualizzaCarte(carte, divid) {
+    function VisualizzaCarte(carte, divid, nome) {
         $("#" + divid).empty()
         carte.forEach(function (item) {
             var div = $("<div class='carta'></div>");
-            div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "'");
+            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid");
+            //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
+            div.css("background-image", "url('" + item.pathImage + "')");
             $("#" + divid).append(div);
         });
+        if (nome != undefined) {
+            $("#" + divid).append("<div class='nomeg'>" + nome  + "</div>");
+        }
     }
 
     function VisualizzaPunteggio(punteggio, divid) {
@@ -77,10 +93,10 @@
 
     function AggiornaTavolo(partita) {
         VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
-        VisualizzaCarte(partita.giocatori[0].carte, "carte-g1");
-        VisualizzaPunteggio(partita.giocatori[0].punteggio.tipoString, "carte-g1")
-        VisualizzaCarte(partita.giocatori[1].carte, "carte-g2");
-        VisualizzaPunteggio(partita.giocatori[1].punteggio.tipoString, "carte-g2")
+        for (var i = 0; i < 4; i++) {
+            VisualizzaCarte(partita.giocatori[i].carte, "carte-g" + i, partita.giocatori[i].nome);
+            //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
+        }
     }
 
 </script>
