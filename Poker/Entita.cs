@@ -12,7 +12,7 @@ namespace Poker
 
         public List<Carta> Carte { get; set; }
 
-        public void Pesca(Mazzo mazzo, int numCarte = 1)
+        public Entita Pesca(Mazzo mazzo, int numCarte = 1)
         {
             for (int i = 0; i < numCarte; i++)
             {
@@ -21,6 +21,7 @@ namespace Poker
                 Carte.Add(carta);
                 carta.Usata = true;
             }
+            return this;
         }
 
     }

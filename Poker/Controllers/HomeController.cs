@@ -21,9 +21,21 @@ namespace Poker.Controllers
 
         public IActionResult Index()
         {
-            Partita partita = SetNuovaPartita();
+            if (Partita.PartitaCorrente == null)
+            {
+                SetNuovaPartita(1);
+                ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Count() - 1;
+            }
+            else if (Partita.PartitaCorrente.Giocatori.Count < 4)
+            {
+                AggiungiGiocatore();
+                ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Count() - 1;
+            }
+            else
+                ViewBag.IdGiocatore = -1;
 
-            return View(partita);
+
+            return View(Partita.PartitaCorrente);
         }
 
         public IActionResult Privacy()
@@ -39,9 +51,9 @@ namespace Poker.Controllers
 
         public JsonResult NuovaPartita()
         {
-            Partita partita = SetNuovaPartita();
+            SetNuovaPartita(4);
 
-            return Json(partita);
+            return Json(Partita.PartitaCorrente);
         }
 
         public JsonResult PescaCartaTavolo()
@@ -55,12 +67,20 @@ namespace Poker.Controllers
             return Json(Partita.PartitaCorrente);
         }
 
+        public JsonResult GetVincitore()
+        {
+            List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori);
+            lista.Sort();
+
+            return Json(lista.FirstOrDefault()?.Id);
+        }
+
         public JsonResult GetPartita()
         {
             return Json(Partita.PartitaCorrente);
         }
 
-        public Partita SetNuovaPartita()
+        public Partita SetNuovaPartita(int NumGiocatori = 4)
         {
             Mazzo mazzo = new Mazzo();
             mazzo.CreaMazzo(true);
@@ -77,18 +97,34 @@ namespace Poker.Controllers
             };
 
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < NumGiocatori; i++)
             {
-                Giocatore g = new Giocatore();
-                g.Nome = $"Giocatore{i + 1}";
-                g.Pesca(mazzo, 2);
-                g.SetPunteggio(t);
+                Giocatore g = new Giocatore
+                {
+                    Nome = $"Giocatore{i + 1}",
+                    Id = i
+                };
+                ((Giocatore)g.Pesca(mazzo, 2)).SetPunteggio(t);
                 partita.Giocatori.Add(g);
             }
 
             Partita.PartitaCorrente = partita;
 
             return partita;
+        }
+
+        public Partita AggiungiGiocatore()
+        {
+            int i = Partita.PartitaCorrente.Giocatori.Count();
+            Giocatore g = new Giocatore
+            {
+                Nome = $"Giocatore{i + 1}",
+                Id = i
+            };
+            ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
+            Partita.PartitaCorrente.Giocatori.Add(g);
+
+            return Partita.PartitaCorrente;
         }
     }
 }

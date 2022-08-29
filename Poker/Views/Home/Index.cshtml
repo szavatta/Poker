@@ -4,26 +4,29 @@
     ViewData["Title"] = "Poker";
 }
 
+@Html.Hidden("IdGiocatore", (int)ViewBag.IdGiocatore)
 <div class="tavolo container">
-    <div class="row">
+    <div class="row rowcarte">
+        <div class="col-sm-4 text-center"></div>
+        <div id="carte-g2" class="col-sm-4 text-center"></div>
+        <div class="col-sm-4 text-center"></div>
+    </div>
+    <div class="row" style="height: 50px;"></div>
+    <div class="row rowcarte">
+        <div id="carte-g1" class="col-sm-3 text-center"></div>
+        <div id="carte-tavolo" class="col-sm-6 text-center"></div>
+        <div id="carte-g3" class="col-sm-3 text-center"></div>
+    </div>
+    <div class="row" style="height: 50px;"></div>
+    <div class="row rowcarte">
         <div class="col-sm-4 text-center"></div>
         <div id="carte-g0" class="col-sm-4 text-center"></div>
         <div class="col-sm-4 text-center"></div>
     </div>
-    <div class="row" style="height: 50px;"></div>
-    <div class="row">
-        <div id="carte-g1" class="col-sm-3 text-center"></div>
-        <div id="carte-tavolo" class="col-sm-6 text-center"></div>
-        <div id="carte-g2" class="col-sm-3 text-center"></div>
-    </div>
-    <div class="row" style="height: 50px;"></div>
-    <div class="row">
-        <div class="col-sm-4 text-center"></div>
-        <div id="carte-g3" class="col-sm-4 text-center"></div>
-        <div class="col-sm-4 text-center"></div>
-    </div>
     <button id="btnNuovaPartita">Nuova partita</button>
-    <button id="btnPescaCartaTavolo">Pesca</button>
+    <button id="btnAggiorna">Aggiorna</button>
+    <button id="btnPescaCartaTavolo">Pesca tavolo</button>
+    <button id="btnGetVincitore">Vincitore</button>
 </div>
 
 <script type="text/javascript">
@@ -35,6 +38,7 @@
         $("#btnNuovaPartita").click(function () {
             NuovaPartita();
         });
+
         $("#btnPescaCartaTavolo").click(function () {
             $.ajax({
                 type: "GET",
@@ -45,6 +49,19 @@
                 }
             });
         });
+
+        $("#btnGetVincitore").click(function () {
+            GetVincitore();
+        });
+
+        $("#btnAggiorna").click(function () {
+            GetPartitaCorrente();
+        });
+
+        setInterval(function ()
+        {
+            GetPartitaCorrente();
+        }, 5000);
 
     })
 
@@ -72,13 +89,34 @@
         });
     }
 
-    function VisualizzaCarte(carte, divid, nome) {
+    function GetVincitore() {
+
+        $.ajax({
+            type: "GET",
+            url: "/home/GetVincitore",
+            dataType: "json",
+            success: function (id) {
+                $(".bred").removeClass("bred");
+                $("#carte-g" + id + " .nomeg").addClass("bred");
+            }
+        });
+    }
+
+    function VisualizzaCarte(carte, divid, nome, idg) {
         $("#" + divid).empty()
         carte.forEach(function (item, index) {
             var div = $("<div class='carta'></div>");
-            div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
             //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
-            //div.css("background-image", "url('" + item.pathImage + "')")/*.css("left", -65*index)*/;
+
+            var path = item.pathImage;
+            if (divid != "carte-tavolo") {
+                if (idg != $("#IdGiocatore").val()) {
+                    path = "carte/retroblu.png";
+                }
+            }
+
+            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
             $("#" + divid).append(div);
         });
         if (nome != undefined) {
@@ -93,8 +131,17 @@
 
     function AggiornaTavolo(partita) {
         VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
-        for (var i = 0; i < 4; i++) {
-            VisualizzaCarte(partita.giocatori[i].carte, "carte-g" + i, partita.giocatori[i].nome);
+        var idg = $("#IdGiocatore").val();
+        for (var i = 0; i < partita.giocatori.length; i++) {
+            if (idg < 0) {
+                idg = 0;
+            } else {
+                var ind = i - idg;
+                if (ind < 0) {
+                    ind = 4 + ind;
+                }
+            }
+            VisualizzaCarte(partita.giocatori[i].carte, "carte-g" + ind, partita.giocatori[i].nome, i);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
         }
     }

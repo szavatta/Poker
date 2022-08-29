@@ -13,6 +13,14 @@ for details on configuring this project to bundle and minify static web assets. 
     position: relative;
 }
 
+.bred {
+    background-color: red;
+}
+
+.rowcarte {
+    min-height: 150px;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;

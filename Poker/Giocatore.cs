@@ -11,6 +11,7 @@ namespace Poker
     {
         public Punteggio Punteggio { get; set; }
         public string Nome { get; set; }
+        public int? Id { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo)
         {
             Punteggio p = new Punteggio();
