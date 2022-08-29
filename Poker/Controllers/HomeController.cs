@@ -60,7 +60,8 @@ namespace Poker.Controllers
         {
             if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5)
             {
-                Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo);
+                int num = Partita.PartitaCorrente.Tavolo.Carte?.Count < 3 ? 3 : 1;
+                Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num);
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
             }
 
