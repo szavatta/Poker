@@ -53,10 +53,11 @@ namespace Poker.Controllers
 
         public JsonResult DistribuisciCarte()
         {
+            Partita.PartitaCorrente.Tavolo.Carte = new List<Carta>();
             Partita.PartitaCorrente.Mazzo = new Mazzo();
             Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
             Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3);
-            Partita.PartitaCorrente.Giocatori.ForEach(q => q.Pesca(Partita.PartitaCorrente.Mazzo, 2));
+            Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Pesca(Partita.PartitaCorrente.Mazzo, 2); });
 
             return Json(Partita.PartitaCorrente);
         }
@@ -100,33 +101,48 @@ namespace Poker.Controllers
             Partita.PartitaCorrente.Giocatori[id].Puntata += importo;
             Partita.PartitaCorrente.Tavolo.Credito += importo;
 
+            string messaggio = VerificaPuntate();
+
+            return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
+        }
+
+        private string VerificaPuntate()
+        {
+            string messaggio = string.Empty;
             //Verifica se hanno puntato tutti uguale
             if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Min(q => q.Puntata))
             {
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.Puntata = 0);
-                if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5)
+                if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() > 1)
                 {
-                    Partita.PartitaCorrente.Giocatori.ForEach(q => q.Uscito = false);
                     Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo);
                 }
                 else
                 {
                     List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito));
+                    lista.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
                     lista.Sort();
                     var vincitore = lista.FirstOrDefault();
+
+                    messaggio = $"Mano vinta da {vincitore.Nome} con {vincitore.Punteggio?.Tipo} di {(vincitore.Punteggio?.Seme != null ? vincitore.Punteggio.Seme.ToString() : "")} {vincitore.Punteggio?.Numero1} {(vincitore.Punteggio?.Numero2 != null ? " e " + vincitore.Punteggio.Numero2.ToString() : "")}";
+
                     vincitore.Credito += Partita.PartitaCorrente.Tavolo.Credito;
                     Partita.PartitaCorrente.Tavolo.Credito = 0;
+
+                    Partita.PartitaCorrente.Tavolo = new Tavolo();
+                    Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Uscito = false; q.Carte = new List<Carta>(); q.Puntata = 0; });
                 }
             }
 
-            return Json(Partita.PartitaCorrente);
+            return messaggio;
         }
 
         public JsonResult Passa(int id)
         {
             Partita.PartitaCorrente.Giocatori[id].Uscito = true;
+            string messaggio = VerificaPuntate();
 
-            return Json(Partita.PartitaCorrente);
+            return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
         }
 
         public JsonResult GetVincitore()
