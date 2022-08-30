@@ -23,6 +23,7 @@
         <div id="carte-g0" class="col-sm-4 text-center"></div>
         <div class="col-sm-4 text-center"></div>
     </div>
+    <button id="btnDistribuisciCarte">Distribuisci carte</button>
     <button id="btnNuovaPartita">Nuova partita</button>
     <button id="btnAggiorna">Aggiorna</button>
     <button id="btnPescaCartaTavolo">Pesca tavolo</button>
@@ -31,6 +32,7 @@
 
 <script type="text/javascript">
 
+    var timer = null;
     $(document).ready(function () {
 
         GetPartitaCorrente();
@@ -50,6 +52,38 @@
             });
         });
 
+        $("#btnDistribuisciCarte").click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/home/DistribuisciCarte",
+                dataType: "json",
+                success: function (partita) {
+                    AggiornaTavolo(partita);
+                }
+            });
+        });
+
+        $(document).on("change", "#inputnome", function () {
+            $.ajax({
+                type: "GET",
+                url: "/home/ModificaNomeGiocatore",
+                dataType: "json",
+                data: {
+                    id: $("#IdGiocatore").val(),
+                    nome: $("#inputnome").val()
+                },
+                success: function (partita) {
+                    AggiornaTavolo(partita);
+                    SetInterval();
+                }
+            });
+        });
+
+        $(document).on("focusin", "#inputnome", function () {
+            clearInterval(timer);
+            timer = null;});
+
+
         $("#btnGetVincitore").click(function () {
             GetVincitore();
         });
@@ -58,12 +92,16 @@
             GetPartitaCorrente();
         });
 
-        setInterval(function ()
-        {
-            GetPartitaCorrente();
-        }, 5000);
-
+        SetInterval();
     })
+
+    function SetInterval() {
+        if (timer == null) {
+            timer = setInterval(function () {
+                GetPartitaCorrente();
+            }, 5000);
+        }
+    }
 
     function GetPartitaCorrente() {
 
@@ -104,6 +142,11 @@
 
     function VisualizzaCarte(carte, divid, nome, idg) {
         $("#" + divid).empty()
+        if (carte.length == 0 && divid == "carte-tavolo") {
+            var div = $("<div class='carta'></div>");
+            div.css("background-image", "url('carte/retroblu.png')")/*.css("left", -65*index)*/;
+            $("#" + divid).append(div);
+        }
         carte.forEach(function (item, index) {
             var div = $("<div class='carta'></div>");
             //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
@@ -120,7 +163,11 @@
             $("#" + divid).append(div);
         });
         if (nome != undefined) {
-            $("#" + divid).append("<div class='nomeg'>" + nome  + "</div>");
+            if (divid == "carte-g0") {
+                $("#" + divid).append("<div class='nomeg'><input id='inputnome' type='text' value='" + nome + "'></div>");
+            } else {
+                $("#" + divid).append("<div class='nomeg'>" + nome + "</div>");
+            }
         }
     }
 

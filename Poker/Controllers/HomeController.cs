@@ -21,19 +21,13 @@ namespace Poker.Controllers
 
         public IActionResult Index()
         {
-            if (Partita.PartitaCorrente == null)
+            if (Partita.PartitaCorrente == null || Partita.PartitaCorrente.Giocatori.Count < 4)
             {
-                SetNuovaPartita(1);
-                ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Count() - 1;
-            }
-            else if (Partita.PartitaCorrente.Giocatori.Count < 4)
-            {
-                AggiungiGiocatore();
+                SetNuovaPartita();
                 ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Count() - 1;
             }
             else
                 ViewBag.IdGiocatore = -1;
-
 
             return View(Partita.PartitaCorrente);
         }
@@ -51,7 +45,18 @@ namespace Poker.Controllers
 
         public JsonResult NuovaPartita()
         {
-            SetNuovaPartita(4);
+            Partita.PartitaCorrente = null;
+            SetNuovaPartita();
+
+            return Json(Partita.PartitaCorrente);
+        }
+
+        public JsonResult DistribuisciCarte()
+        {
+            Partita.PartitaCorrente.Mazzo = new Mazzo();
+            Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
+            Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3);
+            Partita.PartitaCorrente.Giocatori.ForEach(q => q.Pesca(Partita.PartitaCorrente.Mazzo, 2));
 
             return Json(Partita.PartitaCorrente);
         }
@@ -64,6 +69,13 @@ namespace Poker.Controllers
                 Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num);
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
             }
+
+            return Json(Partita.PartitaCorrente);
+        }
+
+        public JsonResult ModificaNomeGiocatore(int id, string nome)
+        {
+            Partita.PartitaCorrente.Giocatori[id].Nome = nome;
 
             return Json(Partita.PartitaCorrente);
         }
@@ -81,7 +93,25 @@ namespace Poker.Controllers
             return Json(Partita.PartitaCorrente);
         }
 
-        public Partita SetNuovaPartita(int NumGiocatori = 4)
+        public Partita SetNuovaPartita()
+        {
+            if (Partita.PartitaCorrente == null)
+            {
+                Partita.PartitaCorrente = new Partita();
+                Partita.PartitaCorrente.Tavolo = new Tavolo();
+                AggiungiGiocatore();
+            }
+            else if (Partita.PartitaCorrente.Giocatori.Count < 4)
+            {
+                AggiungiGiocatore();
+            }
+            else
+                ViewBag.IdGiocatore = -1;
+
+            return Partita.PartitaCorrente;
+        }
+
+        public Partita SetNuovaPartita2(int NumGiocatori = 4)
         {
             Mazzo mazzo = new Mazzo();
             mazzo.CreaMazzo(true);
@@ -116,13 +146,17 @@ namespace Poker.Controllers
 
         public Partita AggiungiGiocatore()
         {
+            if (Partita.PartitaCorrente.Giocatori == null)
+                Partita.PartitaCorrente.Giocatori = new List<Giocatore>();
+
             int i = Partita.PartitaCorrente.Giocatori.Count();
             Giocatore g = new Giocatore
             {
                 Nome = $"Giocatore{i + 1}",
                 Id = i
             };
-            ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
+            if (Partita.PartitaCorrente.Mazzo != null)
+                ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
             Partita.PartitaCorrente.Giocatori.Add(g);
 
             return Partita.PartitaCorrente;
