@@ -16,7 +16,7 @@ namespace Poker
         {
             for (int i = 0; i < numCarte; i++)
             {
-                Carta carta = mazzo.ListaCarte.Where(q => q.Usata == false).FirstOrDefault();
+                Carta carta = mazzo.ListaCarte.FirstOrDefault(q => q.Usata == false);
                 //carta.ImmagineBase64 = carta.GetBase64Immagine();
                 Carte.Add(carta);
                 carta.Usata = true;
