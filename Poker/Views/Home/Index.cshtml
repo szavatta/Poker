@@ -6,6 +6,18 @@
 
 @Html.Hidden("IdGiocatore", (int)ViewBag.IdGiocatore)
 <div class="tavolo container">
+    @if (ViewBag.IdGiocatore == 0)
+    {
+    <div style="margin-bottom: 20px">
+        <button id="btnDistribuisciCarte">Distribuisci carte</button>
+        <input type="text" id="txImporto" value="" style="width: 50px" />
+        <button id="btnAssegnaSoldi">Assegna soldi</button>
+        <button id="btnNuovaPartita">Nuova partita</button>
+        <button id="btnAggiorna">Aggiorna</button>
+        <button id="btnPescaCartaTavolo">Pesca tavolo</button>
+        <button id="btnGetVincitore">Vincitore</button>
+    </div>
+    }
     <div class="row rowcarte">
         <div class="col-sm-4 text-center"></div>
         <div id="carte-g2" class="col-sm-4 text-center"></div>
@@ -23,11 +35,6 @@
         <div id="carte-g0" class="col-sm-4 text-center"></div>
         <div class="col-sm-4 text-center"></div>
     </div>
-    <button id="btnDistribuisciCarte">Distribuisci carte</button>
-    <button id="btnNuovaPartita">Nuova partita</button>
-    <button id="btnAggiorna">Aggiorna</button>
-    <button id="btnPescaCartaTavolo">Pesca tavolo</button>
-    <button id="btnGetVincitore">Vincitore</button>
 </div>
 
 <script type="text/javascript">
@@ -36,6 +43,7 @@
     $(document).ready(function () {
 
         GetPartitaCorrente();
+        DisegnaHtml();
 
         $("#btnNuovaPartita").click(function () {
             NuovaPartita();
@@ -63,6 +71,22 @@
             });
         });
 
+        $("#btnAssegnaSoldi").click(function () {
+            if ($("#txImporto").val() == "") {
+                alert("Inserire un importo");
+                return;
+            }
+            $.ajax({
+                type: "GET",
+                url: "/home/AssegnaSoldi",
+                dataType: "json",
+                data: { importo: $("#txImporto").val() },
+                success: function (partita) {
+                    AggiornaTavolo(partita);
+                }
+            });
+        });
+
         $(document).on("change", "#inputnome", function () {
             $.ajax({
                 type: "GET",
@@ -74,15 +98,43 @@
                 },
                 success: function (partita) {
                     AggiornaTavolo(partita);
-                    SetInterval();
                 }
             });
         });
 
-        $(document).on("focusin", "#inputnome", function () {
-            clearInterval(timer);
-            timer = null;});
+        $(document).on("click", ".btnPuntata", function () {
+            var importo = $(this).siblings(".txPuntata").val();
+            if (importo == "") {
+                alert("Inserire un importo");
+                return;
+            }
+            $.ajax({
+                type: "GET",
+                url: "/home/Puntata",
+                dataType: "json",
+                data: {
+                    id: $("#IdGiocatore").val(),
+                    importo: importo
+                },
+                success: function (partita) {
+                    AggiornaTavolo(partita);
+                }
+            });
+        });
 
+        $(document).on("click", ".btnPassa", function () {
+            $.ajax({
+                type: "GET",
+                url: "/home/Passa",
+                dataType: "json",
+                data: {
+                    id: $("#IdGiocatore").val()
+                },
+                success: function (partita) {
+                    AggiornaTavolo(partita);
+                }
+            });
+        });
 
         $("#btnGetVincitore").click(function () {
             GetVincitore();
@@ -140,36 +192,91 @@
         });
     }
 
-    function VisualizzaCarte(carte, divid, nome, idg) {
-        $("#" + divid).empty()
-        if (carte.length == 0 && divid == "carte-tavolo") {
-            var div = $("<div class='carta'></div>");
-            div.css("background-image", "url('carte/retroblu.png')")/*.css("left", -65*index)*/;
-            $("#" + divid).append(div);
-        }
-        carte.forEach(function (item, index) {
-            var div = $("<div class='carta'></div>");
-            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
-            //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
+    function DisegnaHtml() {
+        $("#carte-tavolo").append("<div class='carte'></div>")
+            .append("<div class='divcredito'></div>");
 
-            var path = item.pathImage;
-            if (divid != "carte-tavolo") {
-                if (idg != $("#IdGiocatore").val()) {
-                    path = "carte/retroblu.png";
-                }
-            }
-
-            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
-            $("#" + divid).append(div);
-        });
-        if (nome != undefined) {
-            if (divid == "carte-g0") {
-                $("#" + divid).append("<div class='nomeg'><input id='inputnome' type='text' value='" + nome + "'></div>");
-            } else {
-                $("#" + divid).append("<div class='nomeg'>" + nome + "</div>");
+        for (var i = 0; i < 4; i++) {
+            $("#carte-g" + i).append("<div class='carte'></div>")
+                .append("<div class='nomeg'>" + (i == 0 ? "<input id='inputnome' type='text' value=''>" : "") + "</div>")
+                .append("<div class='divcredito'></div>")
+                .append("<div class='divpuntata'></div>");
+            if (i == 0) {
+                $("#carte-g" + i).append("<div class='divpunta d-none'>"
+                    + "<input type='text' class='txPuntata' value='' style='width: 50px' />"
+                    + "<button class='btnPuntata' id='" + i + "'>Punta</button>"
+                    + "<button class='btnPassa' id='" + i + "'>Passa</button>"
+                    + "</div>");
             }
         }
     }
+
+    function VisualizzaCarte(giocatore, tavolo, divid, idg) {
+        $("#" + divid).find(".carte").empty();
+
+        //if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
+        //    var div = $("<div class='carta'></div>");
+        //    div.css("background-image", "url('carte/retroblu.png')");
+        //    $("#" + divid).find(".carte").append(div);
+        //}
+        if (giocatore != null && giocatore != undefined) {
+            carte = giocatore.carte;
+        } else if (tavolo != null && tavolo != undefined) {
+            carte = tavolo.carte;
+        }
+        carte.forEach(function (item, index) {
+            var div = $("<div class='carta'></div>");
+            div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
+
+            //var path = item.pathImage;
+            //if (divid != "carte-tavolo") {
+            //    if (idg != $("#IdGiocatore").val()) {
+            //        path = "carte/retroblu.png";
+            //    }
+            //}
+            //div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+
+            $("#" + divid).find(".carte").append(div);
+        });
+        if (giocatore != null && giocatore != undefined && giocatore.nome != "") {
+            if (divid == "carte-g0") {
+                if ($("#" + divid).find("#inputnome").is(":focus") == false) {
+                    $("#" + divid).find("#inputnome").val(giocatore.nome);
+                }
+            } else {
+                $("#" + divid).find(".nomeg").html(giocatore.nome);
+            }
+        }
+        if (giocatore != null && giocatore != undefined) {
+            $("#" + divid).find(".divcredito").html("Credito: " + giocatore.credito);
+            if (giocatore.puntata != 0) {
+                $("#" + divid).find(".divpuntata").html("Puntata: " + giocatore.puntata);
+            } else {
+                $("#" + divid).find(".divpuntata").html("");
+            }
+            if (idg == $("#IdGiocatore").val() && giocatore.credito > 0) {
+                $("#" + divid).find(".divpunta").removeClass("d-none");
+            } else {
+                $("#" + divid).find(".divpunta").addClass("d-none");
+            }
+            if (giocatore.uscito) {
+                $("#" + divid).addClass("bred");
+            } else {
+                $("#" + divid).removeClass("bred");
+            }
+        }
+
+        if (tavolo != null && tavolo != undefined) {
+            if (tavolo.credito != 0) {
+                $("#" + divid).find(".divcredito").html("Posta: " + tavolo.credito);
+            } else {
+                $("#" + divid).find(".divcredito").html("");
+            }
+        }
+    }
+
+
 
     function VisualizzaPunteggio(punteggio, divid) {
         var div = $("<div>" + punteggio + "</div>");
@@ -177,7 +284,7 @@
     }
 
     function AggiornaTavolo(partita) {
-        VisualizzaCarte(partita.tavolo.carte, "carte-tavolo");
+        VisualizzaCarte(null, partita.tavolo, "carte-tavolo");
         var idg = $("#IdGiocatore").val();
         for (var i = 0; i < partita.giocatori.length; i++) {
             if (idg < 0) {
@@ -188,7 +295,7 @@
                     ind = 4 + ind;
                 }
             }
-            VisualizzaCarte(partita.giocatori[i].carte, "carte-g" + ind, partita.giocatori[i].nome, i);
+            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
         }
     }

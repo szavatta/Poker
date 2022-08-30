@@ -11,6 +11,8 @@ namespace Poker
         }
 
         public List<Carta> Carte { get; set; }
+        public decimal Credito { get; set; }
+
 
         public Entita Pesca(Mazzo mazzo, int numCarte = 1)
         {

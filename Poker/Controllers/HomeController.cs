@@ -73,9 +73,32 @@ namespace Poker.Controllers
             return Json(Partita.PartitaCorrente);
         }
 
+        public JsonResult AssegnaSoldi(decimal importo)
+        {
+            Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Credito = importo; q.Puntata = 0; });
+
+            return Json(Partita.PartitaCorrente);
+        }
+
         public JsonResult ModificaNomeGiocatore(int id, string nome)
         {
             Partita.PartitaCorrente.Giocatori[id].Nome = nome;
+
+            return Json(Partita.PartitaCorrente);
+        }
+
+        public JsonResult Puntata(int id, decimal importo)
+        {
+            Partita.PartitaCorrente.Giocatori[id].Credito -= importo;
+            Partita.PartitaCorrente.Giocatori[id].Puntata += importo;
+            Partita.PartitaCorrente.Tavolo.Credito += importo;
+
+            return Json(Partita.PartitaCorrente);
+        }
+
+        public JsonResult Passa(int id)
+        {
+            Partita.PartitaCorrente.Giocatori[id].Uscito = true;
 
             return Json(Partita.PartitaCorrente);
         }
