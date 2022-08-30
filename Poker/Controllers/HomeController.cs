@@ -89,9 +89,35 @@ namespace Poker.Controllers
 
         public JsonResult Puntata(int id, decimal importo)
         {
+            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            if (Partita.PartitaCorrente.Giocatori[id].Puntata + importo < min)
+                throw new Exception("Puntata errata. Il minimo è " + min);
+
+            if (importo > Partita.PartitaCorrente.Giocatori[id].Credito)
+                throw new Exception("Puntata errata. Non hai credito sufficiente");
+
             Partita.PartitaCorrente.Giocatori[id].Credito -= importo;
             Partita.PartitaCorrente.Giocatori[id].Puntata += importo;
             Partita.PartitaCorrente.Tavolo.Credito += importo;
+
+            //Verifica se hanno puntato tutti uguale
+            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Min(q => q.Puntata))
+            {
+                Partita.PartitaCorrente.Giocatori.ForEach(q => q.Puntata = 0);
+                if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5)
+                {
+                    Partita.PartitaCorrente.Giocatori.ForEach(q => q.Uscito = false);
+                    Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo);
+                }
+                else
+                {
+                    List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito));
+                    lista.Sort();
+                    var vincitore = lista.FirstOrDefault();
+                    vincitore.Credito += Partita.PartitaCorrente.Tavolo.Credito;
+                    Partita.PartitaCorrente.Tavolo.Credito = 0;
+                }
+            }
 
             return Json(Partita.PartitaCorrente);
         }

@@ -104,12 +104,13 @@
 
         $(document).on("click", ".btnPuntata", function () {
             var importo = $(this).siblings(".txPuntata").val();
+            $(this).siblings(".txPuntata").val("");
             if (importo == "") {
                 alert("Inserire un importo");
                 return;
             }
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: "/home/Puntata",
                 dataType: "json",
                 data: {
@@ -117,7 +118,11 @@
                     importo: importo
                 },
                 success: function (partita) {
+
                     AggiornaTavolo(partita);
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
                 }
             });
         });
@@ -214,11 +219,11 @@
     function VisualizzaCarte(giocatore, tavolo, divid, idg) {
         $("#" + divid).find(".carte").empty();
 
-        if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
-            var div = $("<div class='carta'></div>");
-            div.css("background-image", "url('carte/retroblu.png')");
-            $("#" + divid).find(".carte").append(div);
-        }
+        //if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
+        //    var div = $("<div class='carta'></div>");
+        //    div.css("background-image", "url('carte/retroblu.png')");
+        //    $("#" + divid).find(".carte").append(div);
+        //}
         if (giocatore != null && giocatore != undefined) {
             carte = giocatore.carte;
         } else if (tavolo != null && tavolo != undefined) {
@@ -226,16 +231,16 @@
         }
         carte.forEach(function (item, index) {
             var div = $("<div class='carta'></div>");
-            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
             //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
 
-            var path = item.pathImage;
-            if (divid != "carte-tavolo") {
-                if (idg != $("#IdGiocatore").val()) {
-                    path = "carte/retroblu.png";
-                }
-            }
-            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+            //var path = item.pathImage;
+            //if (divid != "carte-tavolo") {
+            //    if (idg != $("#IdGiocatore").val()) {
+            //        path = "carte/retroblu.png";
+            //    }
+            //}
+            //div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
 
             $("#" + divid).find(".carte").append(div);
         });
