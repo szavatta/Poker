@@ -90,6 +90,9 @@ namespace Poker.Controllers
 
         public JsonResult Puntata(int id, decimal importo)
         {
+            if (Partita.PartitaCorrente.Giocatori[id].Uscito)
+                throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
+
             decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
             if (Partita.PartitaCorrente.Giocatori[id].Puntata + importo < min)
                 throw new Exception("Puntata errata. Il minimo è " + min);
