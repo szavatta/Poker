@@ -56,6 +56,7 @@ namespace Poker.Controllers
 
         public JsonResult DistribuisciCarte()
         {
+            Partita.PartitaCorrente.Stato = Partita.EnumStato.Iniziata;
             Partita.PartitaCorrente.Tavolo.Carte = new List<Carta>();
             Partita.PartitaCorrente.Mazzo = new Mazzo();
             Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
@@ -125,6 +126,7 @@ namespace Poker.Controllers
                 }
                 else
                 {
+                    Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMano;
                     List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito));
                     lista.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
                     lista.Sort();
@@ -151,6 +153,15 @@ namespace Poker.Controllers
             return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
         }
 
+        public JsonResult ImportoVedi(int id)
+        {
+            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            decimal diff = min - Partita.PartitaCorrente.Giocatori[id].Puntata;
+
+            return Json(diff);
+        }
+
+
         public JsonResult GetVincitore()
         {
             List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori);
@@ -168,7 +179,10 @@ namespace Poker.Controllers
         {
             if (Partita.PartitaCorrente == null)
             {
-                Partita.PartitaCorrente = new Partita();
+                Partita.PartitaCorrente = new Partita
+                { 
+                    Stato = Partita.EnumStato.DaIniziare
+                };
                 Partita.PartitaCorrente.Tavolo = new Tavolo();
                 AggiungiGiocatore(sessionId);
             }

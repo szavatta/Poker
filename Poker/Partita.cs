@@ -10,6 +10,15 @@ namespace Poker
         public Tavolo Tavolo { get; set; }
         public List<Giocatore> Giocatori { get; set; }
         public int Mano { get; set; }
+        public EnumStato Stato { get; set; }
+
+        public enum EnumStato
+        {
+            DaIniziare,
+            Iniziata,
+            CambioMano,
+            Terminata
+        }
     }
 
 }
