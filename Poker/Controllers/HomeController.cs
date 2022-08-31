@@ -60,7 +60,7 @@ namespace Poker.Controllers
             Partita.PartitaCorrente.Tavolo.Carte = new List<Carta>();
             Partita.PartitaCorrente.Mazzo = new Mazzo();
             Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
-            Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3);
+            Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
             Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Pesca(Partita.PartitaCorrente.Mazzo, 2); });
 
             return Json(Partita.PartitaCorrente);
@@ -71,7 +71,7 @@ namespace Poker.Controllers
             if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5)
             {
                 int num = Partita.PartitaCorrente.Tavolo.Carte?.Count < 3 ? 3 : 1;
-                Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num);
+                Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num, 1);
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
             }
 
@@ -122,7 +122,8 @@ namespace Poker.Controllers
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.Puntata = 0);
                 if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() > 1)
                 {
-                    Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo);
+                    Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 1, 1);
+                    Partita.PartitaCorrente.Mano = Partita.PartitaCorrente.GetNextMano();
                 }
                 else
                 {

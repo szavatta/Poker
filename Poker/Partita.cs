@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Poker
 {
@@ -19,6 +20,31 @@ namespace Poker
             CambioMano,
             Terminata
         }
+
+        public int GetNextMano(int? attuale = null)
+        {
+            if (attuale == null)
+                attuale = Partita.PartitaCorrente.Mano;
+            int id = -1;
+            bool trovato = false;
+            for (int i = 0; i < Partita.PartitaCorrente.Giocatori.Count - 1; i++)
+            {
+                id = (attuale.Value + i + 1) % (Partita.PartitaCorrente.Giocatori.Count);
+                if (!Partita.PartitaCorrente.Giocatori[id].Uscito)
+                {
+                    trovato = true;
+                    break;
+                }
+            }
+
+            if (!trovato)
+                throw new Exception("Non ci sono altri giocatori da passare la mano");
+
+            return id;
+        }
+
+
+
     }
 
 }

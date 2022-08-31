@@ -14,8 +14,11 @@ namespace Poker
         public decimal Credito { get; set; }
 
 
-        public Entita Pesca(Mazzo mazzo, int numCarte = 1)
+        public Entita Pesca(Mazzo mazzo, int numCarte = 1, int brucia = 0)
         {
+            if (brucia > 0)
+                mazzo.ListaCarte.Where(q => q.Usata == false).Take(brucia).ToList().ForEach(q => q.Usata = true); //Brucia carte
+
             for (int i = 0; i < numCarte; i++)
             {
                 Carta carta = mazzo.ListaCarte.FirstOrDefault(q => q.Usata == false);

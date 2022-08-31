@@ -29,11 +29,12 @@ namespace Poker
             Coppia = 1,
             DoppiaCoppia = 2,
             Tris = 3,
-            ScalaSemplice = 4,
+            Scala = 4,
             Colore = 5,
             Full = 6,
             Poker = 7,
-            ScalaColore = 8
+            ScalaColore = 8,
+            CartaAlta = 9
         }
 
 
@@ -122,7 +123,7 @@ namespace Poker
                     Carte = carte.Where(q => q.Seme == a.Key).ToList();
                 }
             }
-            if (Tipo == null) // ScalaSemplice
+            if (Tipo == null) // Scala
             {
                 carte.Where(q => q.Numero == Carta.NumeroCarta.Asso).ToList().ForEach(q => q.Numero = Carta.NumeroCarta.Asso14);
                 int diff = 0;
@@ -150,7 +151,7 @@ namespace Poker
                     }
                     if (diff == 4)
                     {
-                        Tipo = EnumTipo.ScalaSemplice;
+                        Tipo = EnumTipo.Scala;
                         Numero1 = num;
                         Carte = new List<Carta>();
                         for (int ii = indice; ii < indice + 5; ii++)
@@ -192,6 +193,10 @@ namespace Poker
                     Numero1 = a.Key;
                     Carte = carte.Where(q => q.Numero == a.Key).ToList();
                 }
+            }
+            if (Tipo == null) //Carta alta
+            {
+                Tipo = EnumTipo.CartaAlta;
             }
         }
 

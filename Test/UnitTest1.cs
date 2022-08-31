@@ -175,7 +175,7 @@ namespace Test
             Punteggio p = new Punteggio();
             p.GetPunteggio(carte);
 
-            Assert.IsTrue(p.Tipo == Punteggio.EnumTipo.ScalaSemplice && p.Numero1 == Carta.NumeroCarta.Cinque);
+            Assert.IsTrue(p.Tipo == Punteggio.EnumTipo.Scala && p.Numero1 == Carta.NumeroCarta.Cinque);
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace Test
             Punteggio p = new Punteggio();
             p.GetPunteggio(carte);
 
-            Assert.IsTrue(p.Tipo == Punteggio.EnumTipo.ScalaSemplice && p.Numero1 == Carta.NumeroCarta.Asso14);
+            Assert.IsTrue(p.Tipo == Punteggio.EnumTipo.Scala && p.Numero1 == Carta.NumeroCarta.Asso14);
         }
 
         [Test]
@@ -328,6 +328,7 @@ namespace Test
 
             Assert.IsTrue(g2.IsVincitore(g1, tavolo));
         }
+
         [Test]
         public void SortGiocatori()
         {
@@ -374,6 +375,36 @@ namespace Test
             listag.Sort();
 
             Assert.AreEqual(g3, listag[0]);
+        }
+
+        [Test]
+        public void GetNextMano()
+        {
+            Poker.Partita.PartitaCorrente = new Partita
+            {
+                Giocatori = new List<Giocatore> { 
+                    new Giocatore { Uscito = true }, 
+                    new Giocatore { Uscito = false },
+                    new Giocatore { Uscito = true },
+                    new Giocatore { Uscito = true },
+                    new Giocatore { Uscito = true },
+                    new Giocatore { Uscito = false },
+                    new Giocatore { Uscito = true },
+                    new Giocatore { Uscito = true },
+                    new Giocatore { Uscito = false },
+                },
+                Tavolo = new Tavolo(),
+                Mano = 1
+            };
+
+            Assert.AreEqual(5, Poker.Partita.PartitaCorrente.GetNextMano());
+
+            Poker.Partita.PartitaCorrente.Mano = 5;
+            Assert.AreEqual(8, Poker.Partita.PartitaCorrente.GetNextMano());
+
+            Poker.Partita.PartitaCorrente.Mano = 8;
+            Assert.AreEqual(1, Poker.Partita.PartitaCorrente.GetNextMano());
+
         }
 
     }
