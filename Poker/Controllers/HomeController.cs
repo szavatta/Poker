@@ -184,7 +184,7 @@ namespace Poker.Controllers
 
         public JsonResult GetPartita()
         {
-            Partita p = Partita.PartitaCorrente.Clone();
+            Partita p = (Partita)Partita.PartitaCorrente.Clone();
             p.Logs = p.Logs.OrderByDescending(q => q.Data).ToList();
             return Json(p);
         }

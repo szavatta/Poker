@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Poker
 {
     [Serializable]
-    public class Partita 
+    public class Partita : ICloneable
     {
         public Partita()
         {
@@ -55,17 +55,11 @@ namespace Poker
             return id;
         }
 
-        public Partita Clone()
+        public object Clone()
         {
-            using (var ms = new MemoryStream())
-            {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(ms, this);
-                ms.Seek(0, SeekOrigin.Begin);
-                return (Partita)formatter.Deserialize(ms);
-            }
+            var partita = (Partita)MemberwiseClone();
+            return partita;
         }
-
     }
 
 }
