@@ -6,34 +6,41 @@
 
 @Html.Hidden("IdGiocatore", (int)ViewBag.IdGiocatore)
 <div class="tavolo container">
-    @if (ViewBag.IdGiocatore == 0)
-    {
-    <div style="margin-bottom: 20px">
-        <button id="btnDistribuisciCarte">Distribuisci carte</button>
-        <input type="text" id="txImporto" value="" style="width: 50px" />
-        <button id="btnAssegnaSoldi">Assegna soldi</button>
-        <button id="btnNuovaPartita">Nuova partita</button>
-        <button id="btnAggiorna">Aggiorna</button>
-        <button id="btnPescaCartaTavolo">Pesca tavolo</button>
-        <button id="btnGetVincitore">Vincitore</button>
-    </div>
-    }
-    <div class="row rowcarte">
-        <div class="col-sm-4 text-center"></div>
-        <div id="carte-g2" class="col-sm-4 text-center"></div>
-        <div class="col-sm-4 text-center"></div>
-    </div>
-    <div class="row" style="height: 50px;"></div>
-    <div class="row rowcarte">
-        <div id="carte-g1" class="col-sm-3 text-center"></div>
-        <div id="carte-tavolo" class="col-sm-6 text-center"></div>
-        <div id="carte-g3" class="col-sm-3 text-center"></div>
-    </div>
-    <div class="row" style="height: 50px;"></div>
-    <div class="row rowcarte">
-        <div class="col-sm-4 text-center"></div>
-        <div id="carte-g0" class="col-sm-4 text-center"></div>
-        <div class="col-sm-4 text-center"></div>
+    <div class="row">
+        <div class="col-sm-10">
+            @if (ViewBag.IdGiocatore == 0)
+            {
+                <div style="margin-bottom: 20px">
+                    <button id="btnDistribuisciCarte">Distribuisci carte</button>
+                    <input type="text" id="txImporto" value="" style="width: 50px" />
+                    <button id="btnAssegnaSoldi">Assegna soldi</button>
+                    <button id="btnNuovaPartita">Nuova partita</button>
+                    <button id="btnAggiorna">Aggiorna</button>
+                    <button id="btnPescaCartaTavolo">Pesca tavolo</button>
+                    <button id="btnGetVincitore">Vincitore</button>
+                </div>
+            }
+            <div class="row rowcarte">
+                <div class="col-sm-4 text-center"></div>
+                <div id="carte-g2" class="col-sm-4 text-center"></div>
+                <div class="col-sm-4 text-center"></div>
+            </div>
+            <div class="row" style="height: 50px;"></div>
+            <div class="row rowcarte">
+                <div id="carte-g1" class="col-sm-3 text-center"></div>
+                <div id="carte-tavolo" class="col-sm-6 text-center"></div>
+                <div id="carte-g3" class="col-sm-3 text-center"></div>
+            </div>
+            <div class="row" style="height: 50px;"></div>
+            <div class="row rowcarte">
+                <div class="col-sm-4 text-center"></div>
+                <div id="carte-g0" class="col-sm-4 text-center"></div>
+                <div class="col-sm-4 text-center"></div>
+            </div>
+        </div>
+        <div id="divlogs" class="col-sm2">
+            
+        </div>
     </div>
 </div>
 
@@ -326,6 +333,12 @@
             VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
         }
+
+        $("#divlogs").empty().append("<ul class='list-group'>");
+        partita.logs.forEach(function (log) {
+            $("#divlogs").append("<li class='list-group-item'>" + log.testo + "</li>");
+        });
+        $("#divlogs").append("</ul>");
     }
 
 </script>

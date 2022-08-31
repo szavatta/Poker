@@ -3,6 +3,7 @@ using System.IO;
 
 namespace Poker
 {
+    [Serializable]
     public class Carta
     {
         public Carta(NumeroCarta numero, SemeCarta seme)

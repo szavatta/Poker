@@ -18,6 +18,13 @@ for details on configuring this project to bundle and minify static web assets. 
     position: relative;
 }
 
+#divlogs {
+    width: 250px;
+    width: 250px;
+    overflow-y: scroll;
+    height: 700px;
+}
+
 .bred {
     background-color: red;
 }

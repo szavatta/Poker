@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Poker
 {
+    [Serializable]
     public class Mazzo
     {
         public List<Carta> ListaCarte { get; set; }

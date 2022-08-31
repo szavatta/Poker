@@ -6,7 +6,7 @@ using System;
 
 namespace Poker
 {
-
+    [Serializable]
     public class Giocatore : Entita, IComparable<Giocatore>
     {
         public Punteggio Punteggio { get; set; }

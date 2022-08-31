@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Poker
 {
+    [Serializable]
     public class Punteggio
     {
         private EnumTipo? _tipo { get; set; }

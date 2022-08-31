@@ -1,10 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Poker
 {
-    public class Partita
+    [Serializable]
+    public class Partita 
     {
+        public Partita()
+        {
+            Stato = Partita.EnumStato.DaIniziare;
+            Tavolo = new Tavolo();
+            Logs = new List<Log>();
+        }
+            
         public static Partita PartitaCorrente = null;
 
         public Mazzo Mazzo { get; set; }
@@ -12,6 +23,7 @@ namespace Poker
         public List<Giocatore> Giocatori { get; set; }
         public int Mano { get; set; }
         public EnumStato Stato { get; set; }
+        public List<Log> Logs { get; set; }
 
         public enum EnumStato
         {
@@ -43,7 +55,16 @@ namespace Poker
             return id;
         }
 
-
+        public Partita Clone()
+        {
+            using (var ms = new MemoryStream())
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(ms, this);
+                ms.Seek(0, SeekOrigin.Begin);
+                return (Partita)formatter.Deserialize(ms);
+            }
+        }
 
     }
 
