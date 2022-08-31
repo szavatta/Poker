@@ -224,7 +224,7 @@
 
         for (var i = 0; i < 4; i++) {
             $("#carte-g" + i).append("<div class='carte'></div>")
-                .append("<div class='nomeg'>" + (i == 0 ? "<input id='inputnome' type='text' value=''>" : "") + "</div>")
+                .append("<div class='nomeg'>" + (i == 0 && $("#IdGiocatore").val() != "-1" ? "<input id='inputnome' type='text' value=''>" : "") + "</div>")
                 .append("<div class='divcredito'></div>")
                 .append("<div class='divpuntata'></div>");
             if (i == 0) {
@@ -267,7 +267,7 @@
             $("#" + divid).find(".carte").append(div);
         });
         if (giocatore != null && giocatore != undefined && giocatore.nome != "") {
-            if (divid == "carte-g0") {
+            if (divid == "carte-g0" && $("#IdGiocatore").val() != "-1") {
                 if ($("#" + divid).find("#inputnome").is(":focus") == false) {
                     $("#" + divid).find("#inputnome").val(giocatore.nome);
                 }
@@ -313,15 +313,16 @@
     function AggiornaTavolo(partita) {
         VisualizzaCarte(null, partita.tavolo, "carte-tavolo");
         var idg = $("#IdGiocatore").val();
+        if (idg < 0) {
+            idg = 0;
+        }
+
         for (var i = 0; i < partita.giocatori.length; i++) {
-            if (idg < 0) {
-                idg = 0;
-            } else {
-                var ind = i - idg;
-                if (ind < 0) {
-                    ind = 4 + ind;
-                }
+            var ind = i - idg;
+            if (ind < 0) {
+                ind = 4 + ind;
             }
+
             VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
         }

@@ -21,11 +21,11 @@ namespace Poker.Controllers
 
         public IActionResult Index()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("SessionId")))
-                HttpContext.Session.SetString("SessionId", HttpContext.Session.Id);
-
-            if (Partita.PartitaCorrente == null || Partita.PartitaCorrente.Giocatori.Count < 4)
+            if (Partita.PartitaCorrente == null || Partita.PartitaCorrente.Giocatori.Count <= 4)
             {
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("SessionId")))
+                    HttpContext.Session.SetString("SessionId", HttpContext.Session.Id);
+
                 SetNuovaPartita(HttpContext.Session.GetString("SessionId"));
                 ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == HttpContext.Session.GetString("SessionId")).FirstOrDefault()?.Id;
             }
