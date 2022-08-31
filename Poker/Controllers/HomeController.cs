@@ -21,10 +21,13 @@ namespace Poker.Controllers
 
         public IActionResult Index()
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("SessionId")))
+                HttpContext.Session.SetString("SessionId", HttpContext.Session.Id);
+
             if (Partita.PartitaCorrente == null || Partita.PartitaCorrente.Giocatori.Count < 4)
             {
-                SetNuovaPartita();
-                ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Count() - 1;
+                SetNuovaPartita(HttpContext.Session.GetString("SessionId"));
+                ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == HttpContext.Session.GetString("SessionId")).FirstOrDefault()?.Id;
             }
             else
                 ViewBag.IdGiocatore = -1;
@@ -161,17 +164,17 @@ namespace Poker.Controllers
             return Json(Partita.PartitaCorrente);
         }
 
-        public Partita SetNuovaPartita()
+        public Partita SetNuovaPartita(string sessionId = null)
         {
             if (Partita.PartitaCorrente == null)
             {
                 Partita.PartitaCorrente = new Partita();
                 Partita.PartitaCorrente.Tavolo = new Tavolo();
-                AggiungiGiocatore();
+                AggiungiGiocatore(sessionId);
             }
             else if (Partita.PartitaCorrente.Giocatori.Count < 4)
             {
-                AggiungiGiocatore();
+                AggiungiGiocatore(sessionId);
             }
             else
                 ViewBag.IdGiocatore = -1;
@@ -212,20 +215,29 @@ namespace Poker.Controllers
             return partita;
         }
 
-        public Partita AggiungiGiocatore()
+        public Partita AggiungiGiocatore(string sessionId = null)
         {
             if (Partita.PartitaCorrente.Giocatori == null)
                 Partita.PartitaCorrente.Giocatori = new List<Giocatore>();
 
-            int i = Partita.PartitaCorrente.Giocatori.Count();
-            Giocatore g = new Giocatore
+            Giocatore g = null;
+            if (!string.IsNullOrEmpty(sessionId))
+                g = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == sessionId).FirstOrDefault();
+
+            if (g == null)
             {
-                Nome = $"Giocatore{i + 1}",
-                Id = i
-            };
-            if (Partita.PartitaCorrente.Mazzo != null)
-                ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
-            Partita.PartitaCorrente.Giocatori.Add(g);
+                int i = Partita.PartitaCorrente.Giocatori.Count();
+                g = new Giocatore
+                {
+                    Nome = $"Giocatore{i + 1}",
+                    Id = i,
+                    SessionId = sessionId
+                };
+
+                if (Partita.PartitaCorrente.Mazzo != null)
+                    ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
+                Partita.PartitaCorrente.Giocatori.Add(g);
+            }
 
             return Partita.PartitaCorrente;
         }
