@@ -60,6 +60,11 @@ namespace Poker
             var partita = (Partita)MemberwiseClone();
             return partita;
         }
+
+        public static void AggiungiLog(string testo)
+        {
+            Partita.PartitaCorrente.Logs.Insert(0, new Log(testo));
+        }
     }
 
 }

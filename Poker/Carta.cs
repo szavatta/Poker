@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 
 namespace Poker
@@ -42,7 +43,6 @@ namespace Poker
         }
         private SemeCarta _seme { get; set; }
         public string SemeString { get; set; }
-        public bool Usata { get; set; }
         public string PathImage { get; set; }
         public byte[] Immagine { get; set; }
         public string ImmagineBase64 { get; set; }
@@ -93,9 +93,21 @@ namespace Poker
             Jack = 11,
             Donna = 12,
             Re = 13,
+            [Description("Asso")]
             Asso14 = 14
         }
 
+        public override bool Equals(object obj)
+        {
+            bool ret = false;
+
+            if (obj is Carta)
+            {
+                ret = ((Carta)obj).Seme == Seme && ((Carta)obj).Numero == Numero;
+            }
+
+            return ret;
+        }
 
     }
 

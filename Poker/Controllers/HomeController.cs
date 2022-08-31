@@ -21,7 +21,7 @@ namespace Poker.Controllers
 
         public IActionResult Index()
         {
-            if (Partita.PartitaCorrente == null || Partita.PartitaCorrente.Giocatori.Count <= 4)
+            if (Partita.PartitaCorrente == null || Partita.PartitaCorrente.Giocatori.Count < 4)
             {
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("SessionId")))
                     HttpContext.Session.SetString("SessionId", HttpContext.Session.Id);
@@ -30,7 +30,10 @@ namespace Poker.Controllers
                 ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == HttpContext.Session.GetString("SessionId")).FirstOrDefault()?.Id;
             }
             else
+            {
                 ViewBag.IdGiocatore = -1;
+                Partita.AggiungiLog("Un visitatore si è unito alla partita");
+            }
 
             return View(Partita.PartitaCorrente);
         }
@@ -62,7 +65,7 @@ namespace Poker.Controllers
             Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
             Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
             Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Pesca(Partita.PartitaCorrente.Mazzo, 2); });
-            Partita.PartitaCorrente.Logs.Add(new Log("Distribuite 3 carte sul tavolo e 2 per ogni giocatore"));
+            Partita.AggiungiLog("Distribuite 3 carte sul tavolo e 2 per ogni giocatore");
 
             return Json(Partita.PartitaCorrente);
         }
@@ -74,7 +77,7 @@ namespace Poker.Controllers
                 int num = Partita.PartitaCorrente.Tavolo.Carte?.Count < 3 ? 3 : 1;
                 Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num, 1);
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
-                Partita.PartitaCorrente.Logs.Add(new Log($"Pescata {num} carta sul tavolo"));
+                Partita.AggiungiLog($"Pescata {num} carta sul tavolo");
             }
 
             return Json(Partita.PartitaCorrente);
@@ -83,7 +86,7 @@ namespace Poker.Controllers
         public JsonResult AssegnaSoldi(decimal importo)
         {
             Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Credito = importo; q.Puntata = 0; });
-            Partita.PartitaCorrente.Logs.Add(new Log($"Assegnata una quota di {importo} a ciascun giocatore"));
+            Partita.AggiungiLog($"Assegnata una quota di {importo} a ciascun giocatore");
 
             return Json(Partita.PartitaCorrente);
         }
@@ -92,7 +95,7 @@ namespace Poker.Controllers
         {
             string old = Partita.PartitaCorrente.Giocatori[id].Nome;
             Partita.PartitaCorrente.Giocatori[id].Nome = nome;
-            Partita.PartitaCorrente.Logs.Add(new Log($"Il giocatore {old} ha cambiato il nome in {nome}"));
+            Partita.AggiungiLog($"Il giocatore {old} ha cambiato il nome in {nome}");
 
             return Json(Partita.PartitaCorrente);
         }
@@ -114,11 +117,11 @@ namespace Poker.Controllers
             giocatore.Puntata += importo;
             Partita.PartitaCorrente.Tavolo.Credito += importo;
 
-            Partita.PartitaCorrente.Logs.Add(new Log($"Il giocatore {giocatore.Nome} ha puntato {importo}"));
+            Partita.AggiungiLog($"Il giocatore {giocatore.Nome} ha puntato {importo}");
 
             string messaggio = VerificaPuntate();
             if (!string.IsNullOrEmpty(messaggio))
-                Partita.PartitaCorrente.Logs.Add(new Log(messaggio));
+                Partita.AggiungiLog(messaggio);
 
             return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
         }
@@ -160,7 +163,7 @@ namespace Poker.Controllers
         {
             Partita.PartitaCorrente.Giocatori[id].Uscito = true;
             string messaggio = VerificaPuntate();
-            Partita.PartitaCorrente.Logs.Add(new Log($"Il giocatore {Partita.PartitaCorrente.Giocatori[id].Nome} è passato"));
+            Partita.AggiungiLog($"Il giocatore {Partita.PartitaCorrente.Giocatori[id].Nome} è passato");
 
             return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
         }
@@ -184,9 +187,7 @@ namespace Poker.Controllers
 
         public JsonResult GetPartita()
         {
-            Partita p = (Partita)Partita.PartitaCorrente.Clone();
-            p.Logs = p.Logs.OrderByDescending(q => q.Data).ToList();
-            return Json(p);
+            return Json(Partita.PartitaCorrente);
         }
 
         public Partita SetNuovaPartita(string sessionId = null)
@@ -194,7 +195,7 @@ namespace Poker.Controllers
             if (Partita.PartitaCorrente == null)
             {
                 Partita.PartitaCorrente = new Partita();
-                Partita.PartitaCorrente.Logs.Add(new Log("Iniziata nuova partita"));
+                Partita.AggiungiLog("Iniziata nuova partita");
                 AggiungiGiocatore(sessionId);
             }
             else if (Partita.PartitaCorrente.Giocatori.Count < 4)
@@ -229,7 +230,7 @@ namespace Poker.Controllers
                 if (Partita.PartitaCorrente.Mazzo != null)
                     ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
                 Partita.PartitaCorrente.Giocatori.Add(g);
-                Partita.PartitaCorrente.Logs.Add(new Log($"Il giocatore {g.Nome} si è aggiunto al gioco"));
+                Partita.AggiungiLog($"Il giocatore {g.Nome} si è aggiunto al gioco");
             }
 
             return Partita.PartitaCorrente;

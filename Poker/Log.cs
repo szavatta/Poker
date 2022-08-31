@@ -15,5 +15,6 @@ namespace Poker
         }
         public DateTime Data { get; set; }
         public string Testo { get; set; }
+
     }
 }

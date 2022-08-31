@@ -5,7 +5,7 @@ using System.Linq;
 namespace Poker
 {
     [Serializable]
-    public class Entita
+    public abstract class Entita
     {
         public Entita()
         {
@@ -19,15 +19,12 @@ namespace Poker
         public Entita Pesca(Mazzo mazzo, int numCarte = 1, int brucia = 0)
         {
             if (brucia > 0)
-                mazzo.ListaCarte.Where(q => q.Usata == false).Take(brucia).ToList().ForEach(q => q.Usata = true); //Brucia carte
+                mazzo.ListaCarte.RemoveRange(0, brucia); //Brucia carte
 
-            for (int i = 0; i < numCarte; i++)
-            {
-                Carta carta = mazzo.ListaCarte.FirstOrDefault(q => q.Usata == false);
-                //carta.ImmagineBase64 = carta.GetBase64Immagine();
-                Carte.Add(carta);
-                carta.Usata = true;
-            }
+            var carte = mazzo.ListaCarte.Take(numCarte);
+            Carte.AddRange(carte);
+            mazzo.ListaCarte.RemoveRange(0, numCarte);
+
             return this;
         }
 
