@@ -8,18 +8,12 @@
 <div class="tavolo container">
     <div class="row">
         <div class="col-sm-10">
-            @if (ViewBag.IdGiocatore == 0)
-            {
-                <div style="margin-bottom: 20px">
-                    <button id="btnDistribuisciCarte">Distribuisci carte</button>
-                    <input type="text" id="txImporto" value="" style="width: 50px" />
-                    <button id="btnAssegnaSoldi">Assegna soldi</button>
-                    <button id="btnNuovaPartita">Nuova partita</button>
-                    <button id="btnAggiorna">Aggiorna</button>
-                    <button id="btnPescaCartaTavolo">Pesca tavolo</button>
-                    <button id="btnGetVincitore">Vincitore</button>
-                </div>
-            }
+            <div id="DivPulsantiMazziere" style="margin-bottom: 20px">
+                <button id="btnDistribuisciCarte">Distribuisci carte</button>
+                <button id="btnAggiorna">Aggiorna</button>
+                <button id="btnPescaCartaTavolo">Pesca tavolo</button>
+                <button id="btnGetVincitore">Vincitore</button>
+            </div>
             <div class="row rowcarte">
                 <div class="col-sm-4 text-center"></div>
                 <div id="carte-g2" class="col-sm-4 text-center"></div>
@@ -78,22 +72,6 @@
             });
         });
 
-        $("#btnAssegnaSoldi").click(function () {
-            if ($("#txImporto").val() == "") {
-                alert("Inserire un importo");
-                return;
-            }
-            $.ajax({
-                type: "GET",
-                url: "/home/AssegnaSoldi",
-                dataType: "json",
-                data: { importo: $("#txImporto").val() },
-                success: function (partita) {
-                    AggiornaTavolo(partita);
-                }
-            });
-        });
-
         $(document).on("change", "#inputnome", function () {
             $.ajax({
                 type: "GET",
@@ -125,9 +103,6 @@
                     importo: importo
                 },
                 success: function (ret) {
-                    if (ret.messaggio != "") {
-                        alert(ret.messaggio);
-                    }
                     AggiornaTavolo(ret.partita);
                 },
                 error: function (xhr) {
@@ -145,9 +120,6 @@
                     id: $("#IdGiocatore").val()
                 },
                 success: function (ret) {
-                    if (ret.messaggio != "") {
-                        alert(ret.messaggio);
-                    }
                     AggiornaTavolo(ret.partita);
                 }
             });
@@ -248,11 +220,11 @@
     function VisualizzaCarte(giocatore, tavolo, divid, idg) {
         $("#" + divid).find(".carte").empty();
 
-        if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
-            var div = $("<div class='carta'></div>");
-            div.css("background-image", "url('carte/retroblu.png')");
-            $("#" + divid).find(".carte").append(div);
-        }
+        //if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
+        //    var div = $("<div class='carta'></div>");
+        //    div.css("background-image", "url('carte/retroblu.png')");
+        //    $("#" + divid).find(".carte").append(div);
+        //}
         if (giocatore != null && giocatore != undefined) {
             carte = giocatore.carte;
         } else if (tavolo != null && tavolo != undefined) {
@@ -260,16 +232,16 @@
         }
         carte.forEach(function (item, index) {
             var div = $("<div class='carta'></div>");
-            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
             //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
 
-            var path = item.pathImage;
-            if (divid != "carte-tavolo") {
-                if (idg != $("#IdGiocatore").val()) {
-                    path = "carte/retroblu.png";
-                }
-            }
-            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+            //var path = item.pathImage;
+            //if (divid != "carte-tavolo") {
+            //    if (idg != $("#IdGiocatore").val()) {
+            //        path = "carte/retroblu.png";
+            //    }
+            //}
+            //div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
 
             $("#" + divid).find(".carte").append(div);
         });
@@ -318,20 +290,35 @@
     }
 
     function AggiornaTavolo(partita) {
-        VisualizzaCarte(null, partita.tavolo, "carte-tavolo");
+
         var idg = $("#IdGiocatore").val();
+        document.title = partita.giocatori[idg].nome;
+
+        if (partita.idMazziere == idg) {
+            $("#DivPulsantiMazziere").removeClass("d-none");
+        } else {
+            $("#DivPulsantiMazziere").addClass("d-none");
+        }
+
+        VisualizzaCarte(null, partita.tavolo, "carte-tavolo");
         if (idg < 0) {
             idg = 0;
         }
 
+        $(".nomeg").removeClass("bgreen");
         for (var i = 0; i < partita.giocatori.length; i++) {
             var ind = i - idg;
             if (ind < 0) {
                 ind = 4 + ind;
             }
 
-            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i);
+            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, partita.mano);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
+
+            if (i == partita.mano) {
+                $("#carte-g" + ind + " .nomeg").addClass("bgreen");
+            }
+
         }
 
         $("#divlogs").empty().append("<ul class='list-group'>");

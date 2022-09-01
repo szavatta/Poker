@@ -94,6 +94,28 @@ namespace Poker
 
             return ret;
         }
+
+        public void Punta(decimal? importo = null)
+        {
+            if (!importo.HasValue)
+                importo = Partita.PartitaCorrente.Puntata;
+
+            if (Uscito)
+                throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
+
+            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            if (Puntata + importo < min)
+                throw new Exception("Puntata errata. Il minimo è " + min);
+
+            if (importo > Credito)
+                throw new Exception("Puntata errata. Non hai credito sufficiente");
+
+            Credito -= importo.Value;
+            Puntata += importo.Value;
+            Partita.PartitaCorrente.Tavolo.Credito += importo.Value;
+
+            Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}");
+        }
     }
 
 }

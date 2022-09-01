@@ -37,7 +37,7 @@ namespace Test
 
             var v = g1.IsVincitore(g2, t);
 
-            Assert.AreEqual(52, mazzo.ListaCarte?.Count,v.ToString(),null);
+            Assert.AreEqual(52 - t.Carte.Count - g1.Carte.Count - g2.Carte.Count , mazzo.ListaCarte?.Count,v.ToString(),null);
         }
 
         [Test]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Poker.Models;
 using System;
@@ -13,10 +14,12 @@ namespace Poker.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private IConfiguration configuration;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration iConfig)
         {
             _logger = logger;
+            configuration = iConfig;
         }
 
         public IActionResult Index()
@@ -26,7 +29,14 @@ namespace Poker.Controllers
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("SessionId")))
                     HttpContext.Session.SetString("SessionId", HttpContext.Session.Id);
 
-                SetNuovaPartita(HttpContext.Session.GetString("SessionId"));
+                decimal soldiIniziali = 0;
+                decimal puntata = 0;
+                try { soldiIniziali = Convert.ToDecimal(configuration.GetSection("SoldiIniziali").Value); }
+                catch { }
+                try { puntata = Convert.ToDecimal(configuration.GetSection("Puntata").Value); }
+                catch { }
+
+                Partita.NuovaPartita(HttpContext.Session.GetString("SessionId"), soldiIniziali, puntata);
                 ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == HttpContext.Session.GetString("SessionId")).FirstOrDefault()?.Id;
             }
             else
@@ -52,20 +62,33 @@ namespace Poker.Controllers
         public JsonResult NuovaPartita()
         {
             Partita.PartitaCorrente = null;
-            SetNuovaPartita();
+            Partita.NuovaPartita();
 
             return Json(Partita.PartitaCorrente);
         }
 
         public JsonResult DistribuisciCarte()
         {
-            Partita.PartitaCorrente.Stato = Partita.EnumStato.Iniziata;
+            Partita.PartitaCorrente.Stato = Partita.EnumStato.InSvolgimento;
             Partita.PartitaCorrente.Tavolo.Carte = new List<Carta>();
             Partita.PartitaCorrente.Mazzo = new Mazzo();
             Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
             Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
-            Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Pesca(Partita.PartitaCorrente.Mazzo, 2); });
+            Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Uscito = false; q.Pesca(Partita.PartitaCorrente.Mazzo, 2); });
             Partita.AggiungiLog("Distribuite 3 carte sul tavolo e 2 per ogni giocatore");
+
+            Partita.PartitaCorrente.SetNextMano(Partita.PartitaCorrente.IdMazziere);
+            if (Partita.PartitaCorrente.Giocatori.Count > 2)
+            {
+                //Piccolo buio
+                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata);
+                //Grande buio
+                Partita.PartitaCorrente.SetNextMano();
+                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata * 2);
+            }
+
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.AggiungiLog($"La mano è passata al giocatore {Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Nome}");
 
             return Json(Partita.PartitaCorrente);
         }
@@ -83,14 +106,6 @@ namespace Poker.Controllers
             return Json(Partita.PartitaCorrente);
         }
 
-        public JsonResult AssegnaSoldi(decimal importo)
-        {
-            Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Credito = importo; q.Puntata = 0; });
-            Partita.AggiungiLog($"Assegnata una quota di {importo} a ciascun giocatore");
-
-            return Json(Partita.PartitaCorrente);
-        }
-
         public JsonResult ModificaNomeGiocatore(int id, string nome)
         {
             string old = Partita.PartitaCorrente.Giocatori[id].Nome;
@@ -103,27 +118,14 @@ namespace Poker.Controllers
         public JsonResult Puntata(int id, decimal importo)
         {
             var giocatore = Partita.PartitaCorrente.Giocatori[id];
-            if (giocatore.Uscito)
-                throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
-
-            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
-            if (giocatore.Puntata + importo < min)
-                throw new Exception("Puntata errata. Il minimo è " + min);
-
-            if (importo > Partita.PartitaCorrente.Giocatori[id].Credito)
-                throw new Exception("Puntata errata. Non hai credito sufficiente");
-
-            giocatore.Credito -= importo;
-            giocatore.Puntata += importo;
-            Partita.PartitaCorrente.Tavolo.Credito += importo;
-
-            Partita.AggiungiLog($"Il giocatore {giocatore.Nome} ha puntato {importo}");
+            giocatore.Punta(importo);
+            Partita.PartitaCorrente.SetNextMano();
 
             string messaggio = VerificaPuntate();
             if (!string.IsNullOrEmpty(messaggio))
                 Partita.AggiungiLog(messaggio);
 
-            return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
+            return Json(new { partita = Partita.PartitaCorrente });
         }
 
         private string VerificaPuntate()
@@ -135,12 +137,13 @@ namespace Poker.Controllers
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.Puntata = 0);
                 if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() > 1)
                 {
+                    Partita.AggiungiLog($"Pescata 1 carta sul tavolo");
                     Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 1, 1);
-                    Partita.PartitaCorrente.Mano = Partita.PartitaCorrente.GetNextMano();
+                    Partita.PartitaCorrente.SetNextMano();
                 }
                 else
                 {
-                    Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMano;
+                    Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMazziere;
                     List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito));
                     lista.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
                     lista.Sort();
@@ -150,9 +153,11 @@ namespace Poker.Controllers
 
                     vincitore.Credito += Partita.PartitaCorrente.Tavolo.Credito;
                     Partita.PartitaCorrente.Tavolo.Credito = 0;
+                    Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMazziere;
+                    Partita.PartitaCorrente.SetNextMazziere();
 
-                    Partita.PartitaCorrente.Tavolo = new Tavolo();
-                    Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Uscito = false; q.Carte = new List<Carta>(); q.Puntata = 0; });
+                    //Partita.PartitaCorrente.Tavolo = new Tavolo();
+                    //Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Uscito = false; q.Carte = new List<Carta>(); q.Puntata = 0; });
                 }
             }
 
@@ -162,8 +167,10 @@ namespace Poker.Controllers
         public JsonResult Passa(int id)
         {
             Partita.PartitaCorrente.Giocatori[id].Uscito = true;
-            string messaggio = VerificaPuntate();
             Partita.AggiungiLog($"Il giocatore {Partita.PartitaCorrente.Giocatori[id].Nome} è passato");
+            string messaggio = VerificaPuntate();
+            if (!string.IsNullOrEmpty(messaggio))
+                Partita.AggiungiLog(messaggio);
 
             return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
         }
@@ -190,50 +197,5 @@ namespace Poker.Controllers
             return Json(Partita.PartitaCorrente);
         }
 
-        public Partita SetNuovaPartita(string sessionId = null)
-        {
-            if (Partita.PartitaCorrente == null)
-            {
-                Partita.PartitaCorrente = new Partita();
-                Partita.AggiungiLog("Iniziata nuova partita");
-                AggiungiGiocatore(sessionId);
-            }
-            else if (Partita.PartitaCorrente.Giocatori.Count < 4)
-            {
-                AggiungiGiocatore(sessionId);
-            }
-            else
-                ViewBag.IdGiocatore = -1;
-
-            return Partita.PartitaCorrente;
-        }
-
-        public Partita AggiungiGiocatore(string sessionId = null)
-        {
-            if (Partita.PartitaCorrente.Giocatori == null)
-                Partita.PartitaCorrente.Giocatori = new List<Giocatore>();
-
-            Giocatore g = null;
-            if (!string.IsNullOrEmpty(sessionId))
-                g = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == sessionId).FirstOrDefault();
-
-            if (g == null)
-            {
-                int i = Partita.PartitaCorrente.Giocatori.Count();
-                g = new Giocatore
-                {
-                    Nome = $"Giocatore{i + 1}",
-                    Id = i,
-                    SessionId = sessionId
-                };
-
-                if (Partita.PartitaCorrente.Mazzo != null)
-                    ((Giocatore)g.Pesca(Partita.PartitaCorrente.Mazzo, 2)).SetPunteggio(Partita.PartitaCorrente.Tavolo);
-                Partita.PartitaCorrente.Giocatori.Add(g);
-                Partita.AggiungiLog($"Il giocatore {g.Nome} si è aggiunto al gioco");
-            }
-
-            return Partita.PartitaCorrente;
-        }
     }
 }
