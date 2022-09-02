@@ -33,10 +33,10 @@ namespace Poker
 
         public enum EnumStato
         {
-            DaIniziare,
-            InSvolgimento,
-            CambioMazziere,
-            Terminata
+            DaIniziare = 0,
+            InSvolgimento = 1,
+            CambioMazziere = 2,
+            Terminata = 3
         }
 
         public int GetNextMano(int? attuale = null)

@@ -28,10 +28,12 @@ for details on configuring this project to bundle and minify static web assets. 
 
 .bred {
     background-color: red;
+    color: white;
 }
 
 .bgreen {
     background-color: green;
+    color: white;
 }
 
 .rowcarte {

@@ -217,7 +217,7 @@
         }
     }
 
-    function VisualizzaCarte(giocatore, tavolo, divid, idg, idm) {
+    function VisualizzaCarte(giocatore, tavolo, divid, idg, idm, partita) {
         $("#" + divid).find(".carte").empty();
 
         if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
@@ -237,7 +237,7 @@
 
             var path = item.pathImage;
             if (divid != "carte-tavolo") {
-                if (idg != $("#IdGiocatore").val()) {
+                if (idg != $("#IdGiocatore").val() && partita.stato == 1) {
                     path = "carte/retroblu.png";
                 }
             }
@@ -267,9 +267,9 @@
                 $("#" + divid).find(".divpunta").addClass("d-none");
             }
             if (giocatore.uscito) {
-                $("#" + divid).addClass("bred");
+                $("#" + divid).find(".nomeg").addClass("bred");
             } else {
-                $("#" + divid).removeClass("bred");
+                $("#" + divid).find(".nomeg").removeClass("bred");
             }
         }
 
@@ -312,7 +312,7 @@
                 ind = 4 + ind;
             }
 
-            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i, partita.mano);
+            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i, partita.mano, partita);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
 
             if (i == partita.mano) {
