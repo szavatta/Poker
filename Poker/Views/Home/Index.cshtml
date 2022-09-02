@@ -217,14 +217,14 @@
         }
     }
 
-    function VisualizzaCarte(giocatore, tavolo, divid, idg) {
+    function VisualizzaCarte(giocatore, tavolo, divid, idg, idm) {
         $("#" + divid).find(".carte").empty();
 
-        //if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
-        //    var div = $("<div class='carta'></div>");
-        //    div.css("background-image", "url('carte/retroblu.png')");
-        //    $("#" + divid).find(".carte").append(div);
-        //}
+        if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
+            var div = $("<div class='carta'></div>");
+            div.css("background-image", "url('carte/retroblu.png')");
+            $("#" + divid).find(".carte").append(div);
+        }
         if (giocatore != null && giocatore != undefined) {
             carte = giocatore.carte;
         } else if (tavolo != null && tavolo != undefined) {
@@ -232,16 +232,16 @@
         }
         carte.forEach(function (item, index) {
             var div = $("<div class='carta'></div>");
-            div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
             //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
 
-            //var path = item.pathImage;
-            //if (divid != "carte-tavolo") {
-            //    if (idg != $("#IdGiocatore").val()) {
-            //        path = "carte/retroblu.png";
-            //    }
-            //}
-            //div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+            var path = item.pathImage;
+            if (divid != "carte-tavolo") {
+                if (idg != $("#IdGiocatore").val()) {
+                    path = "carte/retroblu.png";
+                }
+            }
+            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
 
             $("#" + divid).find(".carte").append(div);
         });
@@ -261,7 +261,7 @@
             } else {
                 $("#" + divid).find(".divpuntata").html("");
             }
-            if (idg == $("#IdGiocatore").val() && giocatore.credito > 0) {
+            if (idm == $("#IdGiocatore").val() && giocatore.credito > 0) {
                 $("#" + divid).find(".divpunta").removeClass("d-none");
             } else {
                 $("#" + divid).find(".divpunta").addClass("d-none");
@@ -312,7 +312,7 @@
                 ind = 4 + ind;
             }
 
-            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, partita.mano);
+            VisualizzaCarte(partita.giocatori[i], null, "carte-g" + ind, i, partita.mano);
             //VisualizzaPunteggio(partita.giocatori[i].punteggio.tipoString, "carte-g" + i)
 
             if (i == partita.mano) {

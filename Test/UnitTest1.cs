@@ -35,6 +35,10 @@ namespace Test
             Tavolo t = new Tavolo();
             t.Pesca(mazzo, 5);
 
+            g1.SetPunteggio(t);
+            g2.SetPunteggio(t);
+
+
             var v = g1.IsVincitore(g2, t);
 
             Assert.AreEqual(52 - t.Carte.Count - g1.Carte.Count - g2.Carte.Count , mazzo.ListaCarte?.Count,v.ToString(),null);
@@ -266,6 +270,9 @@ namespace Test
                 new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori)
             };
 
+            g1.SetPunteggio(tavolo);
+            g2.SetPunteggio(tavolo);
+
             Assert.IsTrue(g1.IsVincitore(g2,tavolo));
         }
 
@@ -296,6 +303,9 @@ namespace Test
                 new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri)
             };
 
+            g1.SetPunteggio(tavolo);
+            g2.SetPunteggio(tavolo);
+
             Assert.IsTrue(g2.IsVincitore(g1, tavolo));
         }
 
@@ -325,8 +335,58 @@ namespace Test
                 new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
                 new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori)
             };
+            
+            g1.SetPunteggio(tavolo);
+            g2.SetPunteggio(tavolo);
 
             Assert.IsTrue(g2.IsVincitore(g1, tavolo));
+        }
+
+        [Test]
+        public void PunteggioPari()
+        {
+            Tavolo tavolo = new Tavolo();
+            tavolo.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori)
+            };
+            Poker.Partita.PartitaCorrente = new Partita
+            {
+                Tavolo = tavolo
+            };
+
+            Giocatore g1 = new Giocatore(); //tris di assi
+            g1.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri)
+            };
+            g1.SetPunteggio(tavolo);
+
+            Giocatore g2 = new Giocatore(); //tris di 3
+            g2.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori)
+            };
+            g2.SetPunteggio(tavolo);
+
+            Giocatore g3 = new Giocatore(); //scala
+            g3.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori)
+            };
+            g3.SetPunteggio(tavolo);
+
+            List<Giocatore> listag = new List<Giocatore> { g1, g2, g3 };
+            listag.Sort();
+
+            Assert.False(listag[0].Punteggio.Equals(listag[1].Punteggio));
         }
 
         [Test]
@@ -366,12 +426,20 @@ namespace Test
             };
             g3.SetPunteggio(tavolo);
 
+            Giocatore g4 = new Giocatore(); //carta alta
+            g4.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori)
+            };
+            g4.SetPunteggio(tavolo);
+
             Poker.Partita.PartitaCorrente = new Partita
             {
                 Tavolo = tavolo
             };
 
-            List<Giocatore> listag = new List<Giocatore> { g1, g2, g3 };
+            List<Giocatore> listag = new List<Giocatore> { g1, g2, g3, g4 };
             listag.Sort();
 
             Assert.AreEqual(g3, listag[0]);

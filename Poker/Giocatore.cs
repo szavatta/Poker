@@ -15,11 +15,12 @@ namespace Poker
         public decimal Puntata { get; set; }
         public bool Uscito { get; set; }
         public string SessionId { get; set; }
-        public Giocatore SetPunteggio(Tavolo tavolo)
+        public Giocatore SetPunteggio(Tavolo tavolo = null)
         {
             Punteggio p = new Punteggio();
             List<Carta> carte = new List<Carta>(Carte);
-            carte.AddRange(tavolo.Carte);
+            if (tavolo != null)
+                carte.AddRange(tavolo.Carte);
             p.GetPunteggio(carte);
             Punteggio = p;
             return this;
@@ -27,8 +28,8 @@ namespace Poker
 
         public bool? IsVincitore(Giocatore g2, Tavolo tavolo)
         {
-            this.SetPunteggio(tavolo);
-            g2.SetPunteggio(tavolo);
+            //this.SetPunteggio(tavolo);
+            //g2.SetPunteggio(tavolo);
             bool? ret = null;
             if (this.Punteggio.Tipo > g2.Punteggio.Tipo)
                 ret = true;

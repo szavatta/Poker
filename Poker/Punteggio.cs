@@ -25,9 +25,11 @@ namespace Poker
         public Carta.NumeroCarta? Numero2 { get; set; }
         public Carta.SemeCarta? Seme { get; set; }
         public List<Carta> Carte { get; set; }
+        public List<Carta> CarteExtra { get; set; }
 
         public enum EnumTipo
         {
+            CartaAlta = 0,
             Coppia = 1,
             DoppiaCoppia = 2,
             Tris = 3,
@@ -35,8 +37,7 @@ namespace Poker
             Colore = 5,
             Full = 6,
             Poker = 7,
-            ScalaColore = 8,
-            CartaAlta = 9
+            ScalaColore = 8
         }
 
 
@@ -199,10 +200,31 @@ namespace Poker
             if (Tipo == null) //Carta alta
             {
                 Tipo = EnumTipo.CartaAlta;
+                Carte = carte.OrderByDescending(q => q.Numero).Take(5).ToList();
             }
+
+            CarteExtra = new List<Carta>(carte);
+            CarteExtra.RemoveAll(q => Carte.Contains(q));
+            CarteExtra.Where(q => q.Numero == Carta.NumeroCarta.Asso).ToList().ForEach(q => q.Numero = Carta.NumeroCarta.Asso14);
+            CarteExtra = CarteExtra.OrderByDescending(q => q.Numero).Take(5 - Carte.Count).ToList();
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Punteggio p)
+            {
+                bool ret = p.Tipo == Tipo && p.Numero1 == Numero1 && p.Numero2 == Numero2 && AreCarteUguali(p);
+                return ret;
+            }
+            return false;
+        }
 
+        private bool AreCarteUguali(Punteggio p)
+        {
+            var a = p.CarteExtra.Select(q => q.Numero).ToList();
+            var b = CarteExtra.Select(q => q.Numero).ToList();
+            return !a.Except(b).Any() && a.Count() == b.Count();
+        }
     }
 
 }

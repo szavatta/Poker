@@ -73,7 +73,7 @@ namespace Poker.Controllers
             Partita.PartitaCorrente.Tavolo.Carte = new List<Carta>();
             Partita.PartitaCorrente.Mazzo = new Mazzo();
             Partita.PartitaCorrente.Mazzo.CreaMazzo(true);
-            Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
+            //Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
             Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Uscito = false; q.Pesca(Partita.PartitaCorrente.Mazzo, 2); });
             Partita.AggiungiLog("Distribuite 3 carte sul tavolo e 2 per ogni giocatore");
 
@@ -81,10 +81,17 @@ namespace Poker.Controllers
             if (Partita.PartitaCorrente.Giocatori.Count > 2)
             {
                 //Piccolo buio
-                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata);
+                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata / 2);
                 //Grande buio
                 Partita.PartitaCorrente.SetNextMano();
-                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata * 2);
+                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata);
+            }
+            else
+            {
+                //Piccolo buio
+                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.IdMazziere].Punta(Partita.PartitaCorrente.Puntata / 2);
+                //Grande buio
+                Partita.PartitaCorrente.Giocatori[Partita.PartitaCorrente.Mano].Punta(Partita.PartitaCorrente.Puntata);
             }
 
             Partita.PartitaCorrente.SetNextMano();
@@ -118,6 +125,9 @@ namespace Poker.Controllers
         public JsonResult Puntata(int id, decimal importo)
         {
             var giocatore = Partita.PartitaCorrente.Giocatori[id];
+            if (DiffPuntata(importo, giocatore.Puntata) > 0 && DiffPuntata(importo, giocatore.Puntata) < Partita.PartitaCorrente.Puntata)
+                throw new Exception("Puntata non sufficiente");
+
             giocatore.Punta(importo);
             Partita.PartitaCorrente.SetNextMano();
 
@@ -128,6 +138,12 @@ namespace Poker.Controllers
             return Json(new { partita = Partita.PartitaCorrente });
         }
 
+        private static decimal DiffPuntata(decimal importo, decimal puntata)
+        {
+            return importo + puntata - Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+        }
+
+
         private string VerificaPuntate()
         {
             string messaggio = string.Empty;
@@ -137,9 +153,9 @@ namespace Poker.Controllers
                 Partita.PartitaCorrente.Giocatori.ForEach(q => q.Puntata = 0);
                 if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() > 1)
                 {
-                    Partita.AggiungiLog($"Pescata 1 carta sul tavolo");
-                    Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 1, 1);
-                    Partita.PartitaCorrente.SetNextMano();
+                    int num = Partita.PartitaCorrente.Tavolo.Carte.Count == 0 ? 3 : 1;
+                    Partita.AggiungiLog($"Pescat{(num > 0 ? "e" : "a")} {num} cart{(num > 0 ? "e" : "a")} sul tavolo");
+                    Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num, 1);
                 }
                 else
                 {
@@ -167,6 +183,7 @@ namespace Poker.Controllers
         public JsonResult Passa(int id)
         {
             Partita.PartitaCorrente.Giocatori[id].Uscito = true;
+            Partita.PartitaCorrente.SetNextMano();
             Partita.AggiungiLog($"Il giocatore {Partita.PartitaCorrente.Giocatori[id].Nome} è passato");
             string messaggio = VerificaPuntate();
             if (!string.IsNullOrEmpty(messaggio))
@@ -194,6 +211,11 @@ namespace Poker.Controllers
 
         public JsonResult GetPartita()
         {
+            List<Giocatore> lista = new List<Giocatore>(Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito));
+            lista.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
+            lista.Sort();
+            var vincitore = lista.FirstOrDefault();
+
             return Json(Partita.PartitaCorrente);
         }
 
