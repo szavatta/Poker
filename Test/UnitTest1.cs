@@ -475,5 +475,16 @@ namespace Test
 
         }
 
+        [Test]
+        public void PiuVincitori()
+        {
+            Partita partita = new Partita(1000, 100);
+            Poker.Partita.PartitaCorrente = partita;
+
+
+
+            Assert.True(true);
+        }
+
     }
 }

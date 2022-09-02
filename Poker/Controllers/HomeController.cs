@@ -131,9 +131,7 @@ namespace Poker.Controllers
             giocatore.Punta(importo);
             Partita.PartitaCorrente.SetNextMano();
 
-            string messaggio = VerificaPuntate();
-            if (!string.IsNullOrEmpty(messaggio))
-                Partita.AggiungiLog(messaggio);
+            VerificaPuntate();
 
             return Json(new { partita = Partita.PartitaCorrente });
         }
@@ -144,7 +142,7 @@ namespace Poker.Controllers
         }
 
 
-        private string VerificaPuntate()
+        private void VerificaPuntate()
         {
             string messaggio = string.Empty;
             //Verifica se hanno puntato tutti uguale
@@ -165,9 +163,21 @@ namespace Poker.Controllers
                     lista.Sort();
                     var vincitore = lista.FirstOrDefault();
 
-                    messaggio = $"Mano vinta da {vincitore.Nome} con {vincitore.Punteggio?.Tipo} di {(vincitore.Punteggio?.Seme != null ? vincitore.Punteggio.Seme.ToString() : "")} {vincitore.Punteggio?.Numero1} {(vincitore.Punteggio?.Numero2 != null ? " e " + vincitore.Punteggio.Numero2.ToString() : "")}";
+                    List<Giocatore> vincitori = new List<Giocatore> { vincitore };
+                    foreach(var g in lista.Skip(1))
+                    {
+                        if (g.Punteggio != vincitore.Punteggio)
+                            break;
+                        vincitori.Add(g);
+                    }
 
-                    vincitore.Credito += Partita.PartitaCorrente.Tavolo.Credito;
+                    foreach (Giocatore v in vincitori)
+                    {
+                        messaggio = $"Mano vinta da {vincitore.Nome} con {vincitore.Punteggio?.Tipo} di {(vincitore.Punteggio?.Seme != null ? vincitore.Punteggio.Seme.ToString() : "")} {vincitore.Punteggio?.Numero1} {(vincitore.Punteggio?.Numero2 != null ? " e " + vincitore.Punteggio.Numero2.ToString() : "")}";
+                        Partita.AggiungiLog(messaggio);
+                        v.Credito += Partita.PartitaCorrente.Tavolo.Credito / vincitori.Count;
+                    }
+
                     Partita.PartitaCorrente.Tavolo.Credito = 0;
                     Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMazziere;
                     Partita.PartitaCorrente.SetNextMazziere();
@@ -177,7 +187,6 @@ namespace Poker.Controllers
                 }
             }
 
-            return messaggio;
         }
 
         public JsonResult Passa(int id)
@@ -185,11 +194,9 @@ namespace Poker.Controllers
             Partita.PartitaCorrente.Giocatori[id].Uscito = true;
             Partita.PartitaCorrente.SetNextMano();
             Partita.AggiungiLog($"Il giocatore {Partita.PartitaCorrente.Giocatori[id].Nome} è passato");
-            string messaggio = VerificaPuntate();
-            if (!string.IsNullOrEmpty(messaggio))
-                Partita.AggiungiLog(messaggio);
+            VerificaPuntate();
 
-            return Json(new { partita = Partita.PartitaCorrente, messaggio = messaggio });
+            return Json(new { partita = Partita.PartitaCorrente });
         }
 
         public JsonResult ImportoVedi(int id)
