@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Poker;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Test
 {
@@ -17,7 +18,7 @@ namespace Test
         {
             Mazzo mazzo = new Mazzo();
             mazzo.CreaMazzo(true);
-            Assert.AreEqual(52, mazzo.ListaCarte?.Count);
+            Assert.AreEqual(52, mazzo.Carte?.Count);
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace Test
 
             var v = g1.IsVincitore(g2, t);
 
-            Assert.AreEqual(52 - t.Carte.Count - g1.Carte.Count - g2.Carte.Count , mazzo.ListaCarte?.Count,v.ToString(),null);
+            Assert.AreEqual(52 - t.Carte.Count - g1.Carte.Count - g2.Carte.Count , mazzo.Carte?.Count,v.ToString(),null);
         }
 
         [Test]
@@ -520,6 +521,129 @@ namespace Test
             List<Giocatore> vincitori = partita.GetVincitori();
 
             Assert.AreEqual(2, vincitori.Count);
+        }
+
+        [Test]
+        public void SimulazionePartita()
+        {
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.NuovaPartita();
+            Partita partita = Poker.Partita.PartitaCorrente;
+            partita.Mazzo = new Mazzo();
+            partita.Mazzo.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+            };
+
+            partita.DistribuisciCarte();
+            try
+            {
+                partita.Giocatori[partita.Mano].Punta(300);
+                Assert.True(false);
+            }
+            catch { }
+            partita.Giocatori[partita.Mano].Punta(500); //g4
+            partita.Giocatori[partita.Mano].Vedi(); //g1
+            partita.Giocatori[partita.Mano].Vedi(); //g2
+            partita.Giocatori[partita.Mano].Vedi(); //g3
+            Assert.AreEqual(3, partita.Tavolo.Carte.Count);
+            Assert.AreEqual(2000, partita.Tavolo.Credito);
+
+            partita.Giocatori[partita.Mano].Check(); //g4
+            try
+            {
+                partita.Giocatori[partita.Mano].Punta(100);
+                Assert.True(false);
+            }
+            catch { }
+            partita.Giocatori[partita.Mano].Punta(200); //g1 - 200
+            partita.Giocatori[partita.Mano].Punta(400); //g2 - 400
+            partita.Giocatori[partita.Mano].Vedi(); //g3 - 400
+            Assert.AreEqual(3, partita.Mano);
+            partita.Giocatori[partita.Mano].Passa(); //g4 -----
+            partita.Giocatori[partita.Mano].Punta(400); //g1 - 600
+            partita.Giocatori[partita.Mano].Punta(200); //g2 - 600
+            partita.Giocatori[partita.Mano].Vedi(); //g3 - 600
+            Assert.AreEqual(4, partita.Tavolo.Carte.Count);
+            Assert.AreEqual(3800, partita.Tavolo.Credito);
+            Assert.AreEqual(0, partita.Mano);
+
+            partita.Giocatori[partita.Mano].Punta(200); //g1 - 200
+            partita.Giocatori[partita.Mano].Passa(); //g2 ----
+            partita.Giocatori[partita.Mano].Punta(800); //g3 - 800
+            partita.Giocatori[partita.Mano].Punta(600); //g1 - 800
+            Assert.AreEqual(5, partita.Tavolo.Carte.Count);
+            Assert.AreEqual(5400, partita.Tavolo.Credito);
+            Assert.AreEqual(2, partita.Mano);
+
+            partita.Giocatori[partita.Mano].Check(); //g3
+            partita.Giocatori[partita.Mano].Punta(200); //g1 - 200
+            var vincitore = partita.GetVincitori().First();
+            Assert.IsTrue(vincitore.Nome == "Giocatore1");
+            Assert.IsTrue(vincitore.Punteggio.Tipo == Punteggio.EnumTipo.Coppia && vincitore.Punteggio.Numero1 == Carta.NumeroCarta.Otto);
+            partita.Giocatori[partita.Mano].Vedi(); //g3 - 200
+            Assert.IsTrue(partita.Tavolo.Credito == 0);
+            Assert.IsTrue(partita.Giocatori[0].Credito == 13700);
+
+            partita.DistribuisciCarte();
+            Assert.IsTrue(partita.Mazzo.Carte.Count == 28);
+            Assert.IsTrue(partita.IdMazziere == 1);
+            Assert.IsTrue(partita.Mano == 0);
+            Assert.IsTrue(partita.Giocatori[3].Puntata == partita.Puntata);
+
         }
 
     }

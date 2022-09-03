@@ -98,6 +98,12 @@ namespace Poker
             return ret;
         }
 
+        public void Vedi()
+        {
+            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            Punta(min - Puntata);
+        }
+
         public void Punta(decimal? importo = null)
         {
             if (!importo.HasValue)

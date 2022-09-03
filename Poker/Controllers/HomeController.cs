@@ -150,12 +150,11 @@ namespace Poker.Controllers
             return Json(new { partita = Partita.PartitaCorrente });
         }
 
-        public JsonResult ImportoVedi(int id)
+        public JsonResult Vedi(int id)
         {
-            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
-            decimal diff = min - Partita.PartitaCorrente.Giocatori[id].Puntata;
+            Partita.PartitaCorrente.Giocatori[id].Vedi();
 
-            return Json(diff);
+            return Json(new { partita = Partita.PartitaCorrente });
         }
 
 

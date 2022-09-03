@@ -91,7 +91,7 @@ namespace Poker
             Partita.PartitaCorrente.Logs.Insert(0, new Log(testo));
         }
 
-        public static Partita NuovaPartita(string sessionId = null, decimal soldiIniziali = 1000, decimal puntata = 100)
+        public static Partita NuovaPartita(string sessionId = null, decimal soldiIniziali = 10000, decimal puntata = 200)
         {
             if (Partita.PartitaCorrente == null)
             {
@@ -215,8 +215,11 @@ namespace Poker
         public void DistribuisciCarte()
         {
             Tavolo.Carte = new List<Carta>();
-            Mazzo = new Mazzo();
-            Mazzo.CreaMazzo(true);
+            if (Mazzo == null)
+            {
+                Mazzo = new Mazzo();
+                Mazzo.CreaMazzo(true);
+            }
             //Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
             Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Uscito = false; q.Pesca(Mazzo, 2); });
             Partita.AggiungiLog("Distribuite 2 per ogni giocatore");

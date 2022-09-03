@@ -158,14 +158,13 @@
             var obj = $(this);
             $.ajax({
                 type: "GET",
-                url: "/home/ImportoVedi",
+                url: "/home/Vedi",
                 dataType: "json",
                 data: {
                     id: $("#IdGiocatore").val()
                 },
                 success: function (ret) {
-                    obj.siblings(".txPuntata").val(ret);
-                    obj.siblings(".btnPuntata").click();
+                    AggiornaTavolo(ret.partita);
                 },
                 error: function (xhr) {
                     alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
