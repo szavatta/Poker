@@ -14,6 +14,7 @@ namespace Poker
         public int? Id { get; set; }
         public decimal Puntata { get; set; }
         public bool Uscito { get; set; }
+        public bool Check { get; set; }
         public string SessionId { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo = null)
         {

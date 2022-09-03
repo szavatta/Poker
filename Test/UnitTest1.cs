@@ -480,10 +480,46 @@ namespace Test
         {
             Partita partita = new Partita(1000, 100);
             Poker.Partita.PartitaCorrente = partita;
+            partita.Tavolo = new Tavolo();
+            partita.Tavolo.Carte = new List<Carta>
+            {
+                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche)
+            };
+            Giocatore g1 = new Giocatore
+            {
+                Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                }
+            };
 
+            Giocatore g2 = new Giocatore
+            {
+                Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                }
+            };
 
+            Giocatore g3 = new Giocatore
+            {
+                Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                }
+            };
 
-            Assert.True(true);
+            partita.Giocatori = new List<Giocatore> { g1, g2, g3 };
+            List<Giocatore> vincitori = partita.GetVincitori();
+
+            Assert.AreEqual(2, vincitori.Count);
         }
 
     }

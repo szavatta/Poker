@@ -136,6 +136,26 @@ namespace Poker
             return Partita.PartitaCorrente;
         }
 
+        public List<Giocatore> GetVincitori()
+        {
+            List<Giocatore> lista = new List<Giocatore>(Giocatori.Where(q => !q.Uscito));
+            lista.ForEach(q => q.SetPunteggio(Partita.PartitaCorrente.Tavolo));
+            lista.Sort();
+            var vincitore = lista.FirstOrDefault();
+
+            List<Giocatore> vincitori = new List<Giocatore> { vincitore };
+            foreach (var g in lista.Skip(1))
+            {
+                if (!g.Punteggio.Equals(vincitore.Punteggio))
+                    break;
+                vincitori.Add(g);
+            }
+
+            return vincitori;
+        }
+
+        public IEnumerable<Giocatore> GiocatoriAttivi() => Giocatori.Where(q => !q.Uscito);
+
     }
 
 }

@@ -8,12 +8,12 @@
 <div class="tavolo container">
     <div class="row">
         <div class="col-sm-10">
-            <div id="DivPulsantiMazziere" style="margin-bottom: 20px">
+            @*<div id="DivPulsantiMazziere" style="margin-bottom: 20px">
                 <button id="btnDistribuisciCarte">Distribuisci carte</button>
                 <button id="btnAggiorna">Aggiorna</button>
                 <button id="btnPescaCartaTavolo">Pesca tavolo</button>
                 <button id="btnGetVincitore">Vincitore</button>
-            </div>
+            </div>*@
             <div class="row rowcarte">
                 <div class="col-sm-4 text-center"></div>
                 <div id="carte-g2" class="col-sm-4 text-center"></div>
@@ -57,6 +57,9 @@
                 dataType: "json",
                 success: function (partita) {
                     AggiornaTavolo(partita);
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
                 }
             });
         });
@@ -68,6 +71,9 @@
                 dataType: "json",
                 success: function (partita) {
                     AggiornaTavolo(partita);
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
                 }
             });
         });
@@ -83,6 +89,9 @@
                 },
                 success: function (partita) {
                     AggiornaTavolo(partita);
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
                 }
             });
         });
@@ -121,6 +130,26 @@
                 },
                 success: function (ret) {
                     AggiornaTavolo(ret.partita);
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
+                }
+            });
+        });
+
+        $(document).on("click", ".btnCheck", function () {
+            $.ajax({
+                type: "GET",
+                url: "/home/Check",
+                dataType: "json",
+                data: {
+                    id: $("#IdGiocatore").val()
+                },
+                success: function (ret) {
+                    AggiornaTavolo(ret.partita);
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
                 }
             });
         });
@@ -137,6 +166,9 @@
                 success: function (ret) {
                     obj.siblings(".txPuntata").val(ret);
                     obj.siblings(".btnPuntata").click();
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
                 }
             });
         });
@@ -168,6 +200,9 @@
             dataType: "json",
             success: function (partita) {
                 AggiornaTavolo(partita);
+            },
+            error: function (xhr) {
+                alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
             }
         });
     }
@@ -180,6 +215,9 @@
             dataType: "json",
             success: function (partita) {
                 AggiornaTavolo(partita);
+            },
+            error: function (xhr) {
+                alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
             }
         });
     }
@@ -193,6 +231,9 @@
             success: function (id) {
                 $(".bred").removeClass("bred");
                 $("#carte-g" + id + " .nomeg").addClass("bred");
+            },
+            error: function (xhr) {
+                alert(xhr.responseText.replace("System.Exception: ", "").split("\r\n")[0]);
             }
         });
     }
@@ -211,7 +252,11 @@
                     + "<input type='text' class='txPuntata' value='' style='width: 50px' />"
                     + "<button class='btnPuntata'>Punta</button>"
                     + "<button class='btnPassa'>Passa</button>"
+                    + "<button class='btnCheck'>Check</button>"
                     + "<button class='btnVedi'>Vedi</button>"
+                    + "</div>");
+                $("#carte-g" + i).append("<div class='divPulsantiMazziere d-none'>"
+                    + "<button id='btnDistribuisciCarte'>Distribuisci carte</button>"
                     + "</div>");
             }
         }
@@ -258,10 +303,12 @@
             $("#" + divid).find(".divcredito").html("Credito: " + giocatore.credito);
             if (giocatore.puntata != 0) {
                 $("#" + divid).find(".divpuntata").html("Puntata: " + giocatore.puntata);
+            } else if (giocatore.check == true) {
+                $("#" + divid).find(".divpuntata").html("Check");
             } else {
                 $("#" + divid).find(".divpuntata").html("");
             }
-            if (idm == $("#IdGiocatore").val() && giocatore.credito > 0) {
+            if (idm == $("#IdGiocatore").val() && giocatore.credito > 0 && partita.stato == 1) {
                 $("#" + divid).find(".divpunta").removeClass("d-none");
             } else {
                 $("#" + divid).find(".divpunta").addClass("d-none");
@@ -294,10 +341,10 @@
         var idg = $("#IdGiocatore").val();
         document.title = partita.giocatori[idg].nome;
 
-        if (partita.idMazziere == idg) {
-            $("#DivPulsantiMazziere").removeClass("d-none");
+        if (partita.idMazziere == idg && (partita.stato == 0 || partita.stato == 2)) {
+            $(".divPulsantiMazziere").removeClass("d-none");
         } else {
-            $("#DivPulsantiMazziere").addClass("d-none");
+            $(".divPulsantiMazziere").addClass("d-none");
         }
 
         VisualizzaCarte(null, partita.tavolo, "carte-tavolo");
