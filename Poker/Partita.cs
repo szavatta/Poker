@@ -162,10 +162,10 @@ namespace Poker
             //Verifica se hanno puntato tutti uguale oppure se hanno fatto tutti check
             if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Min(q => q.Puntata) && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) > 0
                 && 
-                (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).First().Puntata > Partita.PartitaCorrente.Puntata || Partita.PartitaCorrente.Giocatori.FirstOrDefault(q => q.Posizione == Giocatore.EnumPosizione.GrandeBuio).Check)
-                || Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.Check).Count())
+                (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).First().Puntata > Partita.PartitaCorrente.Puntata || Partita.PartitaCorrente.Giocatori.FirstOrDefault(q => q.Posizione == Giocatore.EnumPosizione.GrandeBuio).IsCheck)
+                || Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.IsCheck).Count())
             {
-                Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Puntata = 0; q.Check = false; });
+                Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Puntata = 0; q.IsCheck = false; });
                 if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() > 1)
                 {
                     int num = Partita.PartitaCorrente.Tavolo.Carte.Count == 0 ? 3 : 1;
@@ -195,5 +195,51 @@ namespace Poker
 
             return messaggio;
         }
+
+        public static decimal DiffPuntata(decimal importo, decimal puntata)
+        {
+            return importo + puntata - Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+        }
+
+        public void PescaCartaTavolo()
+        {
+            if (Tavolo.Carte.Count < 5)
+            {
+                int num = Tavolo.Carte?.Count < 3 ? 3 : 1;
+                Tavolo.Pesca(Mazzo, num, 1);
+                Giocatori.ForEach(q => q.SetPunteggio(Tavolo));
+                Partita.AggiungiLog($"Pescata {num} carta sul tavolo");
+            }
+        }
+
+        public void DistribuisciCarte()
+        {
+            Tavolo.Carte = new List<Carta>();
+            Mazzo = new Mazzo();
+            Mazzo.CreaMazzo(true);
+            //Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
+            Giocatori.ForEach(q => { q.Carte = new List<Carta>(); q.Uscito = false; q.Pesca(Mazzo, 2); });
+            Partita.AggiungiLog("Distribuite 2 per ogni giocatore");
+            Giocatori.ForEach(q => q.Posizione = Giocatore.EnumPosizione.Altro);
+
+            if (Giocatori.Count > 2)
+                SetNextMano(IdMazziere);
+            else
+                PartitaCorrente.Mano = IdMazziere;
+
+            //Piccolo buio
+            Giocatori[PartitaCorrente.Mano].Posizione = Giocatore.EnumPosizione.PiccoloBuio;
+            Giocatori[PartitaCorrente.Mano].Punta(Puntata / 2);
+
+            //Grande buio
+            Giocatori[PartitaCorrente.Mano].Posizione = Giocatore.EnumPosizione.GrandeBuio;
+            Giocatori[PartitaCorrente.Mano].Punta(Puntata);
+
+            Partita.AggiungiLog($"La mano è passata al giocatore {Giocatori[PartitaCorrente.Mano].Nome}");
+            Stato = Partita.EnumStato.InSvolgimento;
+
+        }
+
     }
+
 }

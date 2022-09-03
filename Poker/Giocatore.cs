@@ -14,7 +14,7 @@ namespace Poker
         public int? Id { get; set; }
         public decimal Puntata { get; set; }
         public bool Uscito { get; set; }
-        public bool Check { get; set; }
+        public bool IsCheck { get; set; }
         public string SessionId { get; set; }
         public EnumPosizione Posizione { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo = null)
@@ -103,6 +103,9 @@ namespace Poker
             if (!importo.HasValue)
                 importo = Partita.PartitaCorrente.Puntata;
 
+            if (Partita.PartitaCorrente.Stato == Partita.EnumStato.InSvolgimento && Partita.DiffPuntata(importo.Value, Puntata) > 0 && Partita.DiffPuntata(importo.Value, Puntata) < Partita.PartitaCorrente.Puntata)
+                throw new Exception("Puntata non sufficiente");
+
             if (Uscito)
                 throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
 
@@ -118,16 +121,30 @@ namespace Poker
             Partita.PartitaCorrente.Tavolo.Credito += importo.Value;
 
             Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}");
+
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.VerificaPuntate();
         }
 
         public void Passa()
         {
-            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Sum(q => q.Puntata) == 0 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.Check).Count() == 0)
+            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Sum(q => q.Puntata) == 0 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.IsCheck).Count() == 0)
                 throw new Exception("Non è possibile passare");
 
             Uscito = true;
             Partita.AggiungiLog($"Il giocatore {Nome} è passato");
             Partita.PartitaCorrente.SetNextMano();
+            Partita.VerificaPuntate();
+        }
+
+        public void Check()
+        {
+            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) != Puntata)
+                throw new Exception("Non è possibile effettuare il check");
+
+            IsCheck = true;
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.AggiungiLog($"Il giocatore {Nome} ha effettuato il check");
             Partita.VerificaPuntate();
         }
 
