@@ -16,6 +16,7 @@ namespace Poker
         public bool Uscito { get; set; }
         public bool Check { get; set; }
         public string SessionId { get; set; }
+        public EnumPosizione Posizione { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo = null)
         {
             Punteggio p = new Punteggio();
@@ -118,6 +119,26 @@ namespace Poker
 
             Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}");
         }
+
+        public void Passa()
+        {
+            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Sum(q => q.Puntata) == 0 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.Check).Count() == 0)
+                throw new Exception("Non è possibile passare");
+
+            Uscito = true;
+            Partita.AggiungiLog($"Il giocatore {Nome} è passato");
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.VerificaPuntate();
+        }
+
+        public enum EnumPosizione
+        {
+            Altro,
+            Dealer,
+            PiccoloBuio,
+            GrandeBuio
+        }
+
     }
 
 }
