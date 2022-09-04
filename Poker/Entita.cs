@@ -25,6 +25,9 @@ namespace Poker
             Carte.AddRange(carte);
             mazzo.Carte.RemoveRange(0, numCarte);
 
+            if (mazzo.Carte.Count == 0)
+                mazzo.CreaMazzo(true);
+
             return this;
         }
 

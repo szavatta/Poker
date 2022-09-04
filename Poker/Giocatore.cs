@@ -14,7 +14,11 @@ namespace Poker
         public int? Id { get; set; }
         public decimal Puntata { get; set; }
         public bool Uscito { get; set; }
+        public bool Terminato { get; set; }
         public bool IsCheck { get; set; }
+        public bool IsAllIn { get; set; }
+        public decimal PuntataAllIn { get; set; }
+        public bool IsAllInAbilitato { get; set; }
         public string SessionId { get; set; }
         public EnumPosizione Posizione { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo = null)
@@ -104,6 +108,21 @@ namespace Poker
             Punta(min - Puntata);
         }
 
+        public void AllIn()
+        {
+            if (!IsAllInAbilitato)
+                throw new Exception("AllIn non possibile, hai credito sufficiente");
+
+
+            //decimal max = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            //if (Credito + Puntata >= max)
+            //    throw new Exception("AllIn non possibile, hai credito sufficiente");
+
+            IsAllIn = true;
+            Punta(Credito);
+            PuntataAllIn = Puntata;
+        }
+
         public void Punta(decimal? importo = null)
         {
             if (!importo.HasValue)
@@ -116,7 +135,7 @@ namespace Poker
                 throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
 
             decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
-            if (Puntata + importo < min)
+            if (Puntata + importo < min && !IsAllIn)
                 throw new Exception("Puntata errata. Il minimo è " + min);
 
             if (importo > Credito)
@@ -129,7 +148,8 @@ namespace Poker
             Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}");
 
             Partita.PartitaCorrente.SetNextMano();
-            Partita.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaFlagsGiocatori();
         }
 
         public void Passa()
@@ -140,7 +160,8 @@ namespace Poker
             Uscito = true;
             Partita.AggiungiLog($"Il giocatore {Nome} è passato");
             Partita.PartitaCorrente.SetNextMano();
-            Partita.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaFlagsGiocatori();
         }
 
         public void Check()
@@ -151,7 +172,17 @@ namespace Poker
             IsCheck = true;
             Partita.PartitaCorrente.SetNextMano();
             Partita.AggiungiLog($"Il giocatore {Nome} ha effettuato il check");
-            Partita.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaFlagsGiocatori();
+        }
+
+        public void VerificaFlags()
+        {
+            var max = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            if (Credito < max)
+                IsAllInAbilitato = true;
+            else
+                IsAllInAbilitato = false;
         }
 
         public enum EnumPosizione

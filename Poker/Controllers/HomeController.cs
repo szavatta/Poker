@@ -97,45 +97,6 @@ namespace Poker.Controllers
             return Json(new { partita = Partita.PartitaCorrente });
         }
 
-        //private string VerificaPuntate()
-        //{
-        //    string messaggio = string.Empty;
-        //    //Verifica se hanno puntato tutti uguale oppure se hanno fatto tutti check
-        //    if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Min(q => q.Puntata) && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) > 0
-        //        || Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() == Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.Check).Count())
-        //    {
-        //        Partita.PartitaCorrente.Giocatori.ForEach(q => { q.Puntata = 0; q.Check = false; });
-        //        if (Partita.PartitaCorrente.Tavolo.Carte.Count < 5 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Count() > 1)
-        //        {
-        //            int num = Partita.PartitaCorrente.Tavolo.Carte.Count == 0 ? 3 : 1;
-        //            Partita.AggiungiLog($"Pescat{(num > 0 ? "e" : "a")} {num} cart{(num > 0 ? "e" : "a")} sul tavolo");
-        //            Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, num, 1);
-        //        }
-        //        else
-        //        {
-        //            Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMazziere;
-        //            List<Giocatore> vincitori = Partita.PartitaCorrente.GetVincitori();
-
-        //            string sep = "Mano vinta da ";
-        //            foreach (Giocatore v in vincitori)
-        //            {
-        //                messaggio += sep + v.Nome;
-        //                v.Credito += Partita.PartitaCorrente.Tavolo.Credito / vincitori.Count;
-        //                sep = " e da ";
-        //            }
-        //            messaggio += $" con {vincitori[0].Punteggio?.Tipo}{(vincitori[0].Punteggio?.Seme != null ? " di " + vincitori[0].Punteggio.Seme.ToString() : "")} {(vincitori[0].Punteggio?.Numero1 != null ? " di " + vincitori[0].Punteggio.Numero1.ToString() : "")} {(vincitori[0].Punteggio?.Numero2 != null ? " e " + vincitori[0].Punteggio.Numero2.ToString() : "")}";
-        //            Partita.AggiungiLog(messaggio);
-
-
-        //            Partita.PartitaCorrente.Tavolo.Credito = 0;
-        //            Partita.PartitaCorrente.Stato = Partita.EnumStato.CambioMazziere;
-        //            Partita.PartitaCorrente.SetNextMazziere();
-        //        }
-        //    }
-
-        //    return messaggio;
-        //}
-
         public JsonResult Passa(int id)
         {
             Partita.PartitaCorrente.Giocatori[id].Passa();
@@ -146,6 +107,13 @@ namespace Poker.Controllers
         public JsonResult Check(int id)
         {
             Partita.PartitaCorrente.Giocatori[id].Check();
+
+            return Json(new { partita = Partita.PartitaCorrente });
+        }
+
+        public JsonResult Allin(int id)
+        {
+            Partita.PartitaCorrente.Giocatori[id].AllIn();
 
             return Json(new { partita = Partita.PartitaCorrente });
         }
