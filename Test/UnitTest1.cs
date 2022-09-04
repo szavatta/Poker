@@ -523,17 +523,10 @@ namespace Test
             Assert.AreEqual(2, vincitori.Count);
         }
 
-        [Test]
-        [Order(10)]
-        public void SimulazionePartita()
+        public Mazzo GetMazzo()
         {
-            Poker.Partita.NuovaPartita();
-            Poker.Partita.NuovaPartita();
-            Poker.Partita.NuovaPartita();
-            Poker.Partita.NuovaPartita();
-            Partita partita = Poker.Partita.PartitaCorrente;
-            partita.Mazzo = new Mazzo();
-            partita.Mazzo.Carte = new List<Carta>
+            Mazzo mazzo = new Mazzo();
+            mazzo.Carte = new List<Carta>
             {
                 new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
                 new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
@@ -588,6 +581,20 @@ namespace Test
                 new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
                 new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
             };
+
+            return mazzo;
+        }
+
+        [Test]
+        [Order(10)]
+        public void SimulazionePartita()
+        {
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.NuovaPartita();
+            Partita partita = Poker.Partita.PartitaCorrente;
+            partita.Mazzo = GetMazzo();
 
             partita.DistribuisciCarte();
             try
@@ -710,6 +717,10 @@ namespace Test
             Assert.IsTrue(v.Count == 1 && v[0].Punteggio.Tipo == Punteggio.EnumTipo.Coppia && v[0].Punteggio.Numero1 == Carta.NumeroCarta.Sette);
             Assert.IsTrue(partita.Giocatori[1].Terminato);
 
+            Assert.AreEqual(4, partita.Mazzo.Carte.Count);
+            partita.DistribuisciCarte();
+            Assert.AreEqual(50, partita.Mazzo.Carte.Count);
+            partita.Mazzo = GetMazzo();
             partita.DistribuisciCarte();
 
         }

@@ -49,7 +49,7 @@ namespace Poker
             for (int i = 0; i < Giocatori.Count - 1; i++)
             {
                 id = (attuale.Value + i + 1) % (Giocatori.Count);
-                if (!Giocatori[id].Uscito && !Giocatori[id].Terminato && !Giocatori[id].IsAllIn && Giocatori[id].Credito > 0)
+                if (!Giocatori[id].Uscito && !Giocatori[id].Terminato && !Giocatori[id].IsAllIn)
                 {
                     trovato = true;
                     break;
@@ -271,14 +271,15 @@ namespace Poker
                 Mazzo.CreaMazzo(true);
             }
             //Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
-            Giocatori.Where(q => !q.Terminato).ToList().ForEach(q => { q.Carte = new List<Carta>(); q.Uscito = false; q.Pesca(Mazzo, 2); });
-            Partita.AggiungiLog("Distribuite 2 per ogni giocatore");
-            Giocatori.ForEach(q => 
-            {
+            Giocatori.Where(q => !q.Terminato).ToList().ForEach(q => { 
+                q.Carte = new List<Carta>(); 
+                q.Uscito = false;
                 q.Posizione = Giocatore.EnumPosizione.Altro;
                 q.IsAllIn = false;
                 q.PuntataAllIn = 0;
+                q.Pesca(Mazzo, 2); 
             });
+            Partita.AggiungiLog("Distribuite 2 per ogni giocatore");
 
             if (Giocatori.Count > 2)
                 SetNextMano(IdMazziere);
