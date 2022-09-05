@@ -523,64 +523,357 @@ namespace Test
             Assert.AreEqual(2, vincitori.Count);
         }
 
-        public Mazzo GetMazzo()
+        public Mazzo GetMazzo(int num)
         {
             Mazzo mazzo = new Mazzo();
-            mazzo.Carte = new List<Carta>
+            if (num == 1)
             {
-                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
-                new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
-                new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
-                new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
-                new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
-            };
+                mazzo.Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+                };
+            }
+            else if (num == 2)
+            {
+                mazzo.Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),                
+                };
+            }
+            else if (num == 3)
+            {
+                mazzo.Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),                
+                };
+            }
+            else if (num == 4)
+            {
+                mazzo.Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),                
+                };
+            }
+            else if (num == 5)
+            {
+                mazzo.Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                };
+            }
+            else if (num == 6)
+            {
+                mazzo.Carte = new List<Carta>
+                {
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Otto, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sette, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Donna, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Cinque, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Dieci, Carta.SemeCarta.Picche),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Quattro, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Sei, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Due, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Nove, Carta.SemeCarta.Cuori),
+                    new Carta(Carta.NumeroCarta.Asso, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Tre, Carta.SemeCarta.Fiori),
+                    new Carta(Carta.NumeroCarta.Jack, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Quadri),
+                    new Carta(Carta.NumeroCarta.Re, Carta.SemeCarta.Picche),
+                };
+            }
 
             return mazzo;
         }
@@ -594,9 +887,9 @@ namespace Test
             Poker.Partita.NuovaPartita();
             Poker.Partita.NuovaPartita();
             Partita partita = Poker.Partita.PartitaCorrente;
-            partita.Mazzo = GetMazzo();
 
-            partita.DistribuisciCarte();
+            partita.Mazzo = GetMazzo(1);
+            partita.DistribuisciCarte(false);
             try
             {
                 partita.Giocatori[partita.Mano].Punta(300);
@@ -649,8 +942,8 @@ namespace Test
             Assert.IsTrue(partita.Giocatori[0].Credito == 13700);
             Assert.AreEqual(partita.SoldiIniziali * partita.Giocatori.Count(), partita.Giocatori.Sum(q => q.Credito) + partita.Tavolo.Credito);
 
-            partita.DistribuisciCarte();
-            Assert.IsTrue(partita.Mazzo.Carte.Count == 28);
+            partita.Mazzo = GetMazzo(2);
+            partita.DistribuisciCarte(false);
             Assert.IsTrue(partita.IdMazziere == 1);
             Assert.IsTrue(partita.Mano == 0);
             Assert.IsTrue(partita.Giocatori[3].Puntata == partita.Puntata);
@@ -692,7 +985,8 @@ namespace Test
             Assert.IsTrue(partita.Stato == Poker.Partita.EnumStato.CambioMazziere);
             Assert.AreEqual(partita.SoldiIniziali * partita.Giocatori.Count(), partita.Giocatori.Sum(q => q.Credito) + partita.Tavolo.Credito);
 
-            partita.DistribuisciCarte();
+            partita.Mazzo = GetMazzo(3);
+            partita.DistribuisciCarte(false);
             partita.Giocatori[partita.Mano].Vedi(); 
             partita.Giocatori[partita.Mano].Vedi(); 
             partita.Giocatori[partita.Mano].Vedi(); 
@@ -714,14 +1008,14 @@ namespace Test
             partita.Giocatori[partita.Mano].Vedi(); //mano=2
             partita.Giocatori[partita.Mano].Passa(); //mano=2
             var v = partita.GetVincitori();
-            Assert.IsTrue(v.Count == 1 && v[0].Punteggio.Tipo == Punteggio.EnumTipo.Coppia && v[0].Punteggio.Numero1 == Carta.NumeroCarta.Sette);
+            Assert.IsTrue(v.Count == 1 && v[0].Id == 0 && v[0].Punteggio.Tipo == Punteggio.EnumTipo.Coppia && v[0].Punteggio.Numero1 == Carta.NumeroCarta.Nove);
             Assert.IsTrue(partita.Giocatori[1].Terminato);
 
-            Assert.AreEqual(4, partita.Mazzo.Carte.Count);
+            Assert.AreEqual(36, partita.Mazzo.Carte.Count);
             partita.DistribuisciCarte();
-            Assert.AreEqual(50, partita.Mazzo.Carte.Count);
-            partita.Mazzo = GetMazzo();
-            partita.DistribuisciCarte();
+            Assert.AreEqual(46, partita.Mazzo.Carte.Count);
+            partita.Mazzo = GetMazzo(4);
+            partita.DistribuisciCarte(false);
 
         }
 

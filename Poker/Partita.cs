@@ -171,6 +171,7 @@ namespace Poker
             {
                 if (Tavolo.Carte.Count < 5 && Giocatori.Where(q => !q.Uscito).Count() > 1)
                 {
+                    //Giro finito si pesca una carta sul tavolo
                     int num = Tavolo.Carte.Count == 0 ? 3 : 1;
                     Partita.AggiungiLog($"Pescat{(num > 0 ? "e" : "a")} {num} cart{(num > 0 ? "e" : "a")} sul tavolo");
                     Tavolo.Pesca(Mazzo, num, 1);
@@ -178,6 +179,7 @@ namespace Poker
                 }
                 else
                 {
+                    //Mano finita si decreta il vincitore
                     Stato = Partita.EnumStato.CambioMazziere;
                     List<Giocatore> vincitori = GetVincitori();
 
@@ -234,7 +236,8 @@ namespace Poker
 
                 //azzera i valori nei giocatori
                 Giocatori.ForEach(q => { 
-                    q.Puntata = 0; 
+                    q.Puntata = 0;
+                    q.PuntataAllIn = 0;
                     q.IsCheck = false; 
                     q.IsAllInAbilitato = false;
                 });
@@ -262,14 +265,13 @@ namespace Poker
             }
         }
 
-        public void DistribuisciCarte()
+        public void DistribuisciCarte(bool nuovoMazzo = true)
         {
             Tavolo.Carte = new List<Carta>();
             if (Mazzo == null)
-            {
                 Mazzo = new Mazzo();
+            if (nuovoMazzo)
                 Mazzo.CreaMazzo(true);
-            }
             //Partita.PartitaCorrente.Tavolo.Pesca(Partita.PartitaCorrente.Mazzo, 3, 1);
             Giocatori.Where(q => !q.Terminato).ToList().ForEach(q => { 
                 q.Carte = new List<Carta>(); 

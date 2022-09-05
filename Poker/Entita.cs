@@ -18,24 +18,11 @@ namespace Poker
 
         public Entita Pesca(Mazzo mazzo, int numCarte = 1, int brucia = 0)
         {
-            if (brucia > 0)
-            {
-                //Brucia carte
-                for (int i = 0; i < brucia; i++)
-                {
-                    mazzo.Carte.RemoveRange(0, 1);
-                    if (mazzo.Carte.Count == 0)
-                        mazzo.CreaMazzo(true);
-                }
-            }
+            if (brucia > 0) //Brucia carte
+                mazzo.Carte.RemoveRange(0, brucia);
 
-            for (int i = 0; i < numCarte; i++)
-            {
-                Carte.Add(mazzo.Carte[0]);
-                mazzo.Carte.RemoveRange(0, 1);
-                if (mazzo.Carte.Count == 0)
-                    mazzo.CreaMazzo(true);
-            }
+            Carte.AddRange(mazzo.Carte.Take(numCarte));
+            mazzo.Carte.RemoveRange(0, numCarte);
 
             return this;
         }
