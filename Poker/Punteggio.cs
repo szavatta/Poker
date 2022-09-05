@@ -200,7 +200,7 @@ namespace Poker
             if (Tipo == null) //Carta alta
             {
                 Tipo = EnumTipo.CartaAlta;
-                Carte = carte.OrderByDescending(q => q.Numero).Take(5).ToList();
+                Carte = new List<Carta>();
             }
 
             CarteExtra = new List<Carta>(carte);

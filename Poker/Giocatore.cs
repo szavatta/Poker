@@ -14,7 +14,13 @@ namespace Poker
         public int? Id { get; set; }
         public decimal Puntata { get; set; }
         public bool Uscito { get; set; }
+        public bool Terminato { get; set; }
+        public bool IsCheck { get; set; }
+        public bool IsAllIn { get; set; }
+        public decimal PuntataAllIn { get; set; }
+        public bool IsAllInAbilitato { get; set; }
         public string SessionId { get; set; }
+        public EnumPosizione Posizione { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo = null)
         {
             Punteggio p = new Punteggio();
@@ -96,16 +102,40 @@ namespace Poker
             return ret;
         }
 
+        public void Vedi()
+        {
+            decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            Punta(min - Puntata);
+        }
+
+        public void AllIn()
+        {
+            if (!IsAllInAbilitato)
+                throw new Exception("AllIn non possibile, hai credito sufficiente");
+
+
+            //decimal max = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            //if (Credito + Puntata >= max)
+            //    throw new Exception("AllIn non possibile, hai credito sufficiente");
+
+            IsAllIn = true;
+            Punta(Credito);
+            PuntataAllIn = Puntata;
+        }
+
         public void Punta(decimal? importo = null)
         {
             if (!importo.HasValue)
                 importo = Partita.PartitaCorrente.Puntata;
 
+            if (Partita.PartitaCorrente.Stato == Partita.EnumStato.InSvolgimento && Partita.DiffPuntata(importo.Value, Puntata) > 0 && Partita.DiffPuntata(importo.Value, Puntata) < Partita.PartitaCorrente.Puntata)
+                throw new Exception("Puntata non sufficiente");
+
             if (Uscito)
                 throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
 
             decimal min = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
-            if (Puntata + importo < min)
+            if (Puntata + importo < min && !IsAllIn)
                 throw new Exception("Puntata errata. Il minimo è " + min);
 
             if (importo > Credito)
@@ -116,7 +146,53 @@ namespace Poker
             Partita.PartitaCorrente.Tavolo.Credito += importo.Value;
 
             Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}");
+
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.PartitaCorrente.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaFlagsGiocatori();
         }
+
+        public void Passa()
+        {
+            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Sum(q => q.Puntata) == 0 && Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito && q.IsCheck).Count() == 0)
+                throw new Exception("Non è possibile passare");
+
+            Uscito = true;
+            Partita.AggiungiLog($"Il giocatore {Nome} è passato");
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.PartitaCorrente.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaFlagsGiocatori();
+        }
+
+        public void Check()
+        {
+            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) != Puntata)
+                throw new Exception("Non è possibile effettuare il check");
+
+            IsCheck = true;
+            Partita.PartitaCorrente.SetNextMano();
+            Partita.AggiungiLog($"Il giocatore {Nome} ha effettuato il check");
+            Partita.PartitaCorrente.VerificaPuntate();
+            Partita.PartitaCorrente.VerificaFlagsGiocatori();
+        }
+
+        public void VerificaFlags()
+        {
+            var max = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
+            if (Credito < max)
+                IsAllInAbilitato = true;
+            else
+                IsAllInAbilitato = false;
+        }
+
+        public enum EnumPosizione
+        {
+            Altro,
+            Dealer,
+            PiccoloBuio,
+            GrandeBuio
+        }
+
     }
 
 }
