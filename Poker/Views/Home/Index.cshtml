@@ -16,19 +16,19 @@
             </div>
             <div class="row rowcarte">
                 <div class="col-sm-4 text-center"></div>
-                <div id="carte-g2" class="col-sm-4 text-center"></div>
+                <div id="carte-g2" class="col-sm-4 text-center carte-g"></div>
                 <div class="col-sm-4 text-center"></div>
             </div>
             <div class="row" style="height: 50px;"></div>
             <div class="row rowcarte">
-                <div id="carte-g1" class="col-sm-3 text-center"></div>
+                <div id="carte-g1" class="col-sm-3 text-center carte-g"></div>
                 <div id="carte-tavolo" class="col-sm-6 text-center"></div>
-                <div id="carte-g3" class="col-sm-3 text-center"></div>
+                <div id="carte-g3" class="col-sm-3 text-center carte-g"></div>
             </div>
             <div class="row" style="height: 50px;"></div>
             <div class="row rowcarte">
                 <div class="col-sm-4 text-center"></div>
-                <div id="carte-g0" class="col-sm-4 text-center"></div>
+                <div id="carte-g0" class="col-sm-4 text-center carte-g"></div>
                 <div class="col-sm-4 text-center"></div>
             </div>
         </div>
@@ -282,7 +282,80 @@
         }
     }
 
+    function VisualizzaCarteTavolo(partita) {
+        $("#carte-tavolo").find(".carte").empty();
 
+        if (partita.tavolo.carte.length == 0) {
+            var div = $("<div class='carta'></div>");
+            div.css("background-image", "url('carte/retroblu.png')");
+            $("#carte-tavolo").find(".carte").append(div);
+        }
+        partita.tavolo.carte.forEach(function (item, index) {
+            var div = $("<div class='carta'></div>");
+            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
+
+            var path = item.pathImage;
+            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+
+            $("#" + divid).find(".carte").append(div);
+        });
+
+        if (partita.tavolo.credito != 0) {
+            $("#" + divid).find(".divcredito").html("Posta: " + tavolo.credito);
+        } else {
+            $("#" + divid).find(".divcredito").html("");
+        }
+    }
+
+    function VisualizzaCarteGiocatore(partita, idg, idm) {
+        $(".carte-g").find(".carte").empty();
+
+        partita.giocatori[idg].carte.forEach(function (item, index) {
+            var div = $("<div class='carta'></div>");
+            //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+            //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
+
+            var path = item.pathImage;
+            if (idg != $("#IdGiocatore").val() && partita.stato == 1) {
+                path = "carte/retroblu.png";
+            }
+            div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+
+            $("#carte-g" + idm).find(".carte").append(div);
+        });
+
+        if (partita.giocatori[idg].nome != "") {
+            if (idm == 0 && $("#IdGiocatore").val() != "-1") {
+                if ($("#carte-g" + idm).find("#inputnome").is(":focus") == false) {
+                    $("#carte-g" + idm).find("#inputnome").val(giocatore.nome);
+                }
+            } else {
+                $("#carte-g" + idm).find(".nomeg").html(giocatore.nome);
+            }
+        }
+        
+        $("#carte-g" + idm).find(".divcredito").html("Credito: " + partita.giocatori[idg].credito);
+
+        if (giocatore.puntata != 0) {
+            $("#carte-g" + idm).find(".divpuntata").html("Puntata: " + partita.giocatori[idg].puntata);
+        } else {
+            $("#carte-g" + idm).find(".divpuntata").html("");
+        }
+
+        if (idm == $("#IdGiocatore").val() && partita.giocatori[idg].credito > 0) {
+            $("#carte-g" + idm).find(".divpunta").removeClass("d-none");
+        } else {
+            $("#carte-g" + idm).find(".divpunta").addClass("d-none");
+        }
+
+        if (partita.giocatori[idg].uscito) {
+            $("#carte-g" + idm).find(".nomeg").addClass("bred");
+        } else {
+            $("#carte-g" + idm).find(".nomeg").removeClass("bred");
+        }
+
+    }
 
     function VisualizzaPunteggio(punteggio, divid) {
         var div = $("<div>" + punteggio + "</div>");
