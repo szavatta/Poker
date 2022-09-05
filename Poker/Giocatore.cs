@@ -119,11 +119,11 @@ namespace Poker
             //    throw new Exception("AllIn non possibile, hai credito sufficiente");
 
             IsAllIn = true;
-            Punta(Credito);
+            Punta(Credito, true);
             PuntataAllIn = Puntata;
         }
 
-        public void Punta(decimal? importo = null)
+        public void Punta(decimal? importo = null, bool AllIn = false)
         {
             if (!importo.HasValue)
                 importo = Partita.PartitaCorrente.Puntata;
@@ -145,7 +145,7 @@ namespace Poker
             Puntata += importo.Value;
             Partita.PartitaCorrente.Tavolo.Credito += importo.Value;
 
-            Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}");
+            Partita.AggiungiLog($"Il giocatore {Nome} ha puntato {importo.Value}{(AllIn ? " con All-In" : "")}");
 
             Partita.PartitaCorrente.SetNextMano();
             Partita.PartitaCorrente.VerificaPuntate();
@@ -166,7 +166,7 @@ namespace Poker
 
         public void Check()
         {
-            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) != Puntata)
+            if (Partita.PartitaCorrente.GiocatoriInGioco().Max(q => q.Puntata) != Puntata)
                 throw new Exception("Non è possibile effettuare il check");
 
             IsCheck = true;
