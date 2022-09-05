@@ -161,15 +161,14 @@ namespace Poker
         {
             string messaggio = string.Empty;
             //Verifica se hanno puntato tutti uguale oppure se hanno fatto tutti check
-            var ingioco = Giocatori.Where(q => !q.Uscito && !q.Terminato).ToList();
-            var ingiocon = ingioco.Where(q => !q.IsAllIn).ToList();
+            var ingiocon = PartitaCorrente.GiocatoriInGioco().Where(q => !q.IsAllIn).ToList();
             var maxPuntata = ingiocon.Max(q => q.Puntata);
-            if (maxPuntata == ingiocon.Min(q => q.Puntata) && maxPuntata > 0
+            if ((maxPuntata == ingiocon.Min(q => q.Puntata) && maxPuntata > 0 || (maxPuntata == 0 && ingiocon.Where(q => q.IsCheck).Count() == ingiocon.Count()))
                 && 
                 //al primo giro da la possibile ad grande buio di poter effettuare la puntata
                 (!(Giro == 0 && Giocatori.FirstOrDefault(q => q.Posizione == Giocatore.EnumPosizione.GrandeBuio).Id == Mano && maxPuntata == Puntata)))
             {
-                if (Tavolo.Carte.Count < 5 && Giocatori.Where(q => !q.Uscito).Count() > 1)
+                if (Tavolo.Carte.Count < 5 && Giocatori.Where(q => !q.Uscito && !q.Terminato && !q.IsAllIn).Count() > 1)
                 {
                     //Giro finito si pesca una carta sul tavolo
                     int num = Tavolo.Carte.Count == 0 ? 3 : 1;
@@ -196,9 +195,9 @@ namespace Poker
                         else
                         {
                             if (v.IsAllIn)
-                                vincita = Math.Round(v.PuntataAllIn * ingioco.Count() / vincitori.Count());
+                                vincita = Math.Round(v.PuntataAllIn * PartitaCorrente.GiocatoriInGioco().Count() / vincitori.Count());
                             else
-                                vincita = Math.Round(v.Puntata * ingioco.Count() / vincitori.Count());
+                                vincita = Math.Round(v.Puntata * PartitaCorrente.GiocatoriInGioco().Count() / vincitori.Count());
                         }
 
                         Tavolo.Credito -= vincita;
@@ -215,10 +214,10 @@ namespace Poker
                     if (Tavolo.Credito > 0)
                     {
                         //i soldi rimasti vengono divisi tra i giocatori rimasti in gioco
-                        var v1 = ingioco.Select(q => q.Id).ToList();
+                        var v1 = PartitaCorrente.GiocatoriInGioco().Select(q => q.Id).ToList();
                         var v2 = vincitori.Select(q => q.Id).ToList();
                         var v3 = v1.Except(v2).ToList();
-                        var v4 = ingioco.Where(q => v3.Contains(q.Id)).ToList();
+                        var v4 = PartitaCorrente.GiocatoriInGioco().Where(q => v3.Contains(q.Id)).ToList();
                         decimal vincita = Math.Round(Tavolo.Credito / v4.Count());
                         foreach (var vva in v4)
                         {
@@ -232,6 +231,9 @@ namespace Poker
                     Giro = 0;
                     Stato = Partita.EnumStato.CambioMazziere;
                     SetNextMazziere();
+                    Giocatori.Where(q => q.Credito == 0 && !q.Terminato).ToList().ForEach(q => q.Terminato = true);
+                    if (Giocatori.Where(q => !q.Terminato).Count() <= 1)
+                        Stato = EnumStato.Terminata;
                 }
 
                 //azzera i valori nei giocatori
@@ -241,7 +243,6 @@ namespace Poker
                     q.IsCheck = false; 
                     q.IsAllInAbilitato = false;
                 });
-                Giocatori.Where(q => q.Credito == 0 && !q.Terminato).ToList().ForEach(q => q.Terminato = true);
             }
 
             return messaggio;
@@ -301,6 +302,9 @@ namespace Poker
 
         }
 
+        public List<Giocatore> GiocatoriInGioco() => Giocatori.Where(q => !q.Uscito && !q.Terminato).ToList();
+
     }
 
 }
+

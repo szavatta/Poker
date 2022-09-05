@@ -893,7 +893,7 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].Punta(300);
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].Punta(500); //g4
@@ -907,7 +907,7 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].Punta(100);
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].Punta(200); //g1 - 200
@@ -969,14 +969,14 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].AllIn(); //g3 - 6500
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].Vedi(); //g2 - 7000
             try
             {
                 partita.Giocatori[partita.Mano].Vedi(); //g3 - 7000
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].AllIn(); //g3 - 7000
@@ -1010,13 +1010,50 @@ namespace Test
             var v = partita.GetVincitori();
             Assert.IsTrue(v.Count == 1 && v[0].Id == 0 && v[0].Punteggio.Tipo == Punteggio.EnumTipo.Coppia && v[0].Punteggio.Numero1 == Carta.NumeroCarta.Nove);
             Assert.IsTrue(partita.Giocatori[1].Terminato);
+            Assert.AreEqual(partita.SoldiIniziali * partita.Giocatori.Count(), partita.Giocatori.Sum(q => q.Credito) + partita.Tavolo.Credito);
 
             Assert.AreEqual(36, partita.Mazzo.Carte.Count);
             partita.DistribuisciCarte();
             Assert.AreEqual(46, partita.Mazzo.Carte.Count);
             partita.Mazzo = GetMazzo(4);
             partita.DistribuisciCarte(false);
+            Assert.True(partita.Giocatori[0].Credito == 10599 && partita.Giocatori[2].Credito == 28734 && partita.Giocatori[3].Credito == 67);
+            partita.Giocatori[partita.Mano].AllIn(); //mano=3
+            partita.Giocatori[partita.Mano].Punta(1000); //mano=0
+            partita.Giocatori[partita.Mano].Vedi(); //mano=2
+            partita.Giocatori[partita.Mano].Punta(400); //mano=0
+            partita.Giocatori[partita.Mano].Punta(800); //mano=2
+            partita.Giocatori[partita.Mano].Punta(800); //mano=0
+            partita.Giocatori[partita.Mano].Vedi(); //mano=2
+            partita.Giocatori[partita.Mano].Punta(400); //mano=0
+            partita.Giocatori[partita.Mano].Punta(600); //mano=2
+            partita.Giocatori[partita.Mano].Vedi(); //mano=0
+            partita.Giocatori[partita.Mano].Check(); //mano=2
+            partita.Giocatori[partita.Mano].Check(); //mano=0
+            Assert.IsTrue(partita.Stato == Poker.Partita.EnumStato.CambioMazziere);
+            Assert.AreEqual(partita.SoldiIniziali * partita.Giocatori.Count(), partita.Giocatori.Sum(q => q.Credito) + partita.Tavolo.Credito);
+            Assert.IsTrue(partita.Giocatori[1].Terminato && partita.Giocatori[3].Terminato);
 
+            partita.Mazzo = GetMazzo(5);
+            partita.DistribuisciCarte(false);
+            partita.Giocatori[partita.Mano].Punta(1000); //mano=2
+            partita.Giocatori[partita.Mano].Vedi(); //mano=0
+            partita.Giocatori[partita.Mano].Punta(10000); //mano=2
+            partita.Giocatori[partita.Mano].Vedi(); //mano=0
+            partita.Giocatori[partita.Mano].Punta(5000); //mano=2
+            try
+            {
+                partita.Giocatori[partita.Mano].Vedi(); //mano=0
+                Assert.Fail();
+            }
+            catch { }
+            partita.Giocatori[partita.Mano].AllIn(); //mano=0
+            Assert.AreEqual(partita.SoldiIniziali * partita.Giocatori.Count(), partita.Giocatori.Sum(q => q.Credito) + partita.Tavolo.Credito);
+            Assert.IsTrue(partita.Stato == Poker.Partita.EnumStato.Terminata);
+            Assert.AreEqual(1, partita.GiocatoriInGioco().Count());
+            Assert.AreEqual(2, partita.GiocatoriInGioco().First().Id);
+            Assert.AreEqual(1, partita.GiocatoriInGioco().Count());
+            Assert.AreEqual(partita.SoldiIniziali * partita.Giocatori.Count(), partita.GiocatoriInGioco().First().Credito);
         }
 
     }

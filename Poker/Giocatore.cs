@@ -166,7 +166,7 @@ namespace Poker
 
         public void Check()
         {
-            if (Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata) != Puntata)
+            if (Partita.PartitaCorrente.GiocatoriInGioco().Max(q => q.Puntata) != Puntata)
                 throw new Exception("Non è possibile effettuare il check");
 
             IsCheck = true;
