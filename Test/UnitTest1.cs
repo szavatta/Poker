@@ -893,7 +893,7 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].Punta(300);
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].Punta(500); //g4
@@ -907,7 +907,7 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].Punta(100);
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].Punta(200); //g1 - 200
@@ -969,14 +969,14 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].AllIn(); //g3 - 6500
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].Vedi(); //g2 - 7000
             try
             {
                 partita.Giocatori[partita.Mano].Vedi(); //g3 - 7000
-                Assert.True(false);
+                Assert.Fail();
             }
             catch { }
             partita.Giocatori[partita.Mano].AllIn(); //g3 - 7000
