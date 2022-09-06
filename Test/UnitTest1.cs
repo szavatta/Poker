@@ -966,12 +966,6 @@ namespace Test
             Assert.IsTrue(partita.Giocatori.Sum(q => q.Puntata) == 0);
             Assert.IsTrue(partita.Tavolo.Carte.Count == 5);
             partita.Giocatori[partita.Mano].Punta(7000); //g1 - 7000
-            try
-            {
-                partita.Giocatori[partita.Mano].AllIn(); //g3 - 6500
-                Assert.Fail();
-            }
-            catch { }
             partita.Giocatori[partita.Mano].Vedi(); //g2 - 7000
             try
             {
@@ -1044,7 +1038,7 @@ namespace Test
             try
             {
                 partita.Giocatori[partita.Mano].Vedi(); //mano=0
-                Assert.Fail();
+                Assert.Fail("Non può Vedere perchè non ha credito");
             }
             catch { }
             partita.Giocatori[partita.Mano].AllIn(); //mano=0

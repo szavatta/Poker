@@ -233,7 +233,7 @@ function DisegnaHtml() {
                 + "<button class='btnVedi'>Vedi</button>"
                 + "<button class='btnPassa'>Passa</button>"
                 + "<button class='btnCheck'>Check</button>"
-                + "<button class='btnAllIn d-none'>All in</button>"
+                + "<button class='btnAllIn'>All in</button>"
                 + "</div>");
             $("#carte-g" + i).append("<div class='divPulsantiMazziere d-none'>"
                 + "<button id='btnDistribuisciCarte'>Distribuisci carte</button>"
@@ -299,11 +299,6 @@ function VisualizzaCarte(giocatore, tavolo, divid, idg, idm, partita) {
             $("#" + divid).find(".nomeg").addClass("bred");
         } else {
             $("#" + divid).find(".nomeg").removeClass("bred");
-        }
-        if (giocatore.isAllInAbilitato) {
-            $("#" + divid).find(".btnAllIn").removeClass("d-none");
-        } else {
-            $("#" + divid).find(".btnAllIn").addClass("d-none");
         }
     }
 

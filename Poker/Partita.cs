@@ -179,6 +179,9 @@ namespace Poker
                 else
                 {
                     //Mano finita si decreta il vincitore
+                    if (5 - Tavolo.Carte.Count > 0)
+                        Tavolo.Pesca(Mazzo, 5 - Tavolo.Carte.Count);
+
                     Stato = Partita.EnumStato.CambioMazziere;
                     List<Giocatore> vincitori = GetVincitori();
 
@@ -241,7 +244,6 @@ namespace Poker
                     q.Puntata = 0;
                     q.PuntataAllIn = 0;
                     q.IsCheck = false; 
-                    q.IsAllInAbilitato = false;
                 });
             }
 

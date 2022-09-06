@@ -18,7 +18,6 @@ namespace Poker
         public bool IsCheck { get; set; }
         public bool IsAllIn { get; set; }
         public decimal PuntataAllIn { get; set; }
-        public bool IsAllInAbilitato { get; set; }
         public string SessionId { get; set; }
         public EnumPosizione Posizione { get; set; }
         public Giocatore SetPunteggio(Tavolo tavolo = null)
@@ -110,14 +109,6 @@ namespace Poker
 
         public void AllIn()
         {
-            if (!IsAllInAbilitato)
-                throw new Exception("AllIn non possibile, hai credito sufficiente");
-
-
-            //decimal max = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
-            //if (Credito + Puntata >= max)
-            //    throw new Exception("AllIn non possibile, hai credito sufficiente");
-
             IsAllIn = true;
             Punta(Credito, true);
             PuntataAllIn = Puntata;
@@ -130,6 +121,9 @@ namespace Poker
 
             if (Partita.PartitaCorrente.Stato == Partita.EnumStato.InSvolgimento && Partita.DiffPuntata(importo.Value, Puntata) > 0 && Partita.DiffPuntata(importo.Value, Puntata) < Partita.PartitaCorrente.Puntata)
                 throw new Exception("Puntata non sufficiente");
+
+            if (importo == Credito)
+                IsAllIn=true;
 
             if (Uscito)
                 throw new Exception("Puntata non valida. Il giocatore non è più in gioco");
@@ -178,11 +172,6 @@ namespace Poker
 
         public void VerificaFlags()
         {
-            var max = Partita.PartitaCorrente.Giocatori.Where(q => !q.Uscito).Max(q => q.Puntata);
-            if (Credito < max)
-                IsAllInAbilitato = true;
-            else
-                IsAllInAbilitato = false;
         }
 
         public enum EnumPosizione
