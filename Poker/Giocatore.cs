@@ -119,6 +119,9 @@ namespace Poker
             if (!importo.HasValue)
                 importo = Partita.PartitaCorrente.Puntata;
 
+            if (Partita.PartitaCorrente.MaxPuntata.HasValue && importo > Partita.PartitaCorrente.MaxPuntata.Value)
+                throw new Exception("Puntata non valida. Importo superiore al massimo consentito");
+
             if (Partita.PartitaCorrente.Stato == Partita.EnumStato.InSvolgimento && Partita.DiffPuntata(importo.Value, Puntata) > 0 && Partita.DiffPuntata(importo.Value, Puntata) < Partita.PartitaCorrente.Puntata)
                 throw new Exception("Puntata non sufficiente");
 

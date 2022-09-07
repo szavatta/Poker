@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Test
 {
+    [TestFixture]
     public class Tests
     {
         [SetUp]
@@ -446,13 +447,29 @@ namespace Test
             Assert.AreEqual(g3, listag[0]);
         }
 
+        [Test, Order(5), NonParallelizable]
+        public void VerificaPuntata()
+        {
+            Poker.Partita.NuovaPartita(maxPuntata: 1000);
+            Poker.Partita.NuovaPartita();
+            Poker.Partita.PartitaCorrente.DistribuisciCarte();
+            try
+            {
+                Poker.Partita.PartitaCorrente.Giocatori[Poker.Partita.PartitaCorrente.Mano].Punta(1100);
+                Assert.Fail("Puntata non consentita");
+            }
+            catch { }
+            Poker.Partita.PartitaCorrente.Giocatori[Poker.Partita.PartitaCorrente.Mano].Punta(1000);
+            Assert.AreEqual(8900, Poker.Partita.PartitaCorrente.Giocatori[0].Credito);
+        }
+
         [Test]
         public void GetNextMano()
         {
             Poker.Partita.PartitaCorrente = new Partita
             {
-                Giocatori = new List<Giocatore> { 
-                    new Giocatore { Uscito = true }, 
+                Giocatori = new List<Giocatore> {
+                    new Giocatore { Uscito = true },
                     new Giocatore { Uscito = false },
                     new Giocatore { Uscito = true },
                     new Giocatore { Uscito = true },
@@ -475,7 +492,6 @@ namespace Test
             Assert.AreEqual(1, Poker.Partita.PartitaCorrente.GetNextMano());
 
         }
-
         [Test]
         public void PiuVincitori()
         {
@@ -522,6 +538,18 @@ namespace Test
 
             Assert.AreEqual(2, vincitori.Count);
         }
+
+
+    }
+
+    [TestFixture]
+    public class SimulazioneTest
+    {
+        [SetUp]
+        public void Setup()
+        {
+        }
+
 
         public Mazzo GetMazzo(int num)
         {
@@ -877,9 +905,7 @@ namespace Test
 
             return mazzo;
         }
-
-        [Test]
-        [Order(10)]
+        [Test, Order(10), NonParallelizable]
         public void SimulazionePartita()
         {
             Poker.Partita.NuovaPartita();
@@ -981,9 +1007,9 @@ namespace Test
 
             partita.Mazzo = GetMazzo(3);
             partita.DistribuisciCarte(false);
-            partita.Giocatori[partita.Mano].Vedi(); 
-            partita.Giocatori[partita.Mano].Vedi(); 
-            partita.Giocatori[partita.Mano].Vedi(); 
+            partita.Giocatori[partita.Mano].Vedi();
+            partita.Giocatori[partita.Mano].Vedi();
+            partita.Giocatori[partita.Mano].Vedi();
             Assert.IsTrue(partita.Giro == 0);
             Assert.IsTrue(partita.Giocatori[partita.Mano].Posizione == Giocatore.EnumPosizione.GrandeBuio);
             partita.Giocatori[partita.Mano].Check();

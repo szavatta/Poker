@@ -31,12 +31,15 @@ namespace Poker.Controllers
 
                 decimal soldiIniziali = 0;
                 decimal puntata = 0;
+                decimal? maxPuntata = null;
                 try { soldiIniziali = Convert.ToDecimal(configuration.GetSection("SoldiIniziali").Value); }
                 catch { }
                 try { puntata = Convert.ToDecimal(configuration.GetSection("Puntata").Value); }
                 catch { }
+                try { maxPuntata = Convert.ToDecimal(configuration.GetSection("MaxPuntata").Value); }
+                catch { }
 
-                Partita.NuovaPartita(HttpContext.Session.GetString("SessionId"), soldiIniziali, puntata);
+                Partita.NuovaPartita(HttpContext.Session.GetString("SessionId"), soldiIniziali, puntata, maxPuntata);
                 ViewBag.IdGiocatore = Partita.PartitaCorrente.Giocatori.Where(q => q.SessionId == HttpContext.Session.GetString("SessionId")).FirstOrDefault()?.Id;
             }
             else

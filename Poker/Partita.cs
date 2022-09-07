@@ -10,13 +10,14 @@ namespace Poker
     [Serializable]
     public class Partita : ICloneable
     {
-        public Partita(decimal soldiIniziali = 0, decimal puntata = 0)
+        public Partita(decimal soldiIniziali = 0, decimal puntata = 0, decimal? maxPuntata = null)
         {
             Stato = Partita.EnumStato.DaIniziare;
             Tavolo = new Tavolo();
             Logs = new List<Log>();
             SoldiIniziali = soldiIniziali;
             Puntata = puntata;
+            MaxPuntata = maxPuntata;
         }
             
         public static Partita PartitaCorrente = null;
@@ -28,6 +29,7 @@ namespace Poker
         public int Giro { get; set; }
         public int IdMazziere { get; set; }
         public decimal SoldiIniziali { get; set; }
+        public decimal? MaxPuntata { get; set; }
         public decimal Puntata { get; set; }
         public EnumStato Stato { get; set; }
         public List<Log> Logs { get; set; }
@@ -92,11 +94,11 @@ namespace Poker
             Partita.PartitaCorrente.Logs.Insert(0, new Log(testo));
         }
 
-        public static Partita NuovaPartita(string sessionId = null, decimal soldiIniziali = 10000, decimal puntata = 200)
+        public static Partita NuovaPartita(string sessionId = null, decimal soldiIniziali = 10000, decimal puntata = 200, decimal? maxPuntata = null)
         {
             if (Partita.PartitaCorrente == null)
             {
-                Partita.PartitaCorrente = new Partita(soldiIniziali, puntata);
+                Partita.PartitaCorrente = new Partita(soldiIniziali, puntata, maxPuntata);
                 Partita.AggiungiLog("Iniziata nuova partita");
                 Partita.PartitaCorrente.AggiungiGiocatore(sessionId);
             }
