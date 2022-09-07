@@ -245,11 +245,11 @@ function DisegnaHtml() {
 function VisualizzaCarte(giocatore, tavolo, divid, idg, idm, partita) {
     $("#" + divid).find(".carte").empty();
 
-    //if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
-    //    var div = $("<div class='carta'></div>");
-    //    div.css("background-image", "url('carte/retroblu.png')");
-    //    $("#" + divid).find(".carte").append(div);
-    //}
+    if (divid == "carte-tavolo" && tavolo.carte.length == 0) {
+        var div = $("<div class='carta'></div>");
+        div.css("background-image", "url('carte/retroblu.png')");
+        $("#" + divid).find(".carte").append(div);
+    }
     if (giocatore != null && giocatore != undefined) {
         carte = giocatore.carte;
     } else if (tavolo != null && tavolo != undefined) {
@@ -257,16 +257,16 @@ function VisualizzaCarte(giocatore, tavolo, divid, idg, idm, partita) {
     }
     carte.forEach(function (item, index) {
         var div = $("<div class='carta'></div>");
-        div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
+        //div.attr("title", item.numeroString + " di " + item.semeString).css("border", "1px solid").css("background-color", "white")/*.css("left", -65 * index)*/;
         //div.css("background-image", "url('data:image/png;base64," + item.immagineBase64 + "')");
 
-        //var path = item.pathImage;
-        //if (divid != "carte-tavolo") {
-        //    if (idg != $("#IdGiocatore").val() && partita.stato == 1) {
-        //        path = "carte/retroblu.png";
-        //    }
-        //}
-        //div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
+        var path = item.pathImage;
+        if (divid != "carte-tavolo") {
+            if (idg != $("#IdGiocatore").val() && partita.stato == 1) {
+                path = "carte/retroblu.png";
+            }
+        }
+        div.css("background-image", "url('" + path + "')").attr("title", item.numeroString + " di " + item.semeString)/*.css("left", -65*index)*/;
 
         $("#" + divid).find(".carte").append(div);
     });
