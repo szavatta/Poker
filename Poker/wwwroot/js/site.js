@@ -11,6 +11,7 @@ $(document).ready(function () {
 
     $("#btnNuovaPartita").click(function () {
         NuovaPartita();
+        DisegnaHtml();
     });
 
     $("#btnPescaCartaTavolo").click(function () {
@@ -218,9 +219,10 @@ function GetVincitore() {
 }
 
 function DisegnaHtml() {
-    $("#carte-tavolo").append("<div class='carte'></div>")
+    $("#carte-tavolo").html("").append("<div class='carte'></div>")
         .append("<div class='divcredito'></div>");
 
+    $("carte-g").html("");
     for (var i = 0; i < 4; i++) {
         $("#carte-g" + i).append("<div class='carte'></div>")
             .append("<div class='nomeg'>" + (i == 0 && $("#IdGiocatore").val() != "-1" ? "<input id='inputnome' type='text' value=''>" : "") + "</div>")

@@ -64,8 +64,11 @@ namespace Poker.Controllers
 
         public JsonResult NuovaPartita()
         {
+            decimal soldiIniziali = Partita.PartitaCorrente.SoldiIniziali;
+            decimal puntata = Partita.PartitaCorrente.Puntata;
+            decimal? maxPuntata = Partita.PartitaCorrente.MaxPuntata;
             Partita.PartitaCorrente = null;
-            Partita.NuovaPartita();
+            Partita.NuovaPartita(HttpContext.Session.GetString("SessionId"), soldiIniziali, puntata, maxPuntata);
 
             return Json(Partita.PartitaCorrente);
         }
